@@ -1,0 +1,13 @@
+/var/log/firmware/ha-*.log {
+  su
+  rotate 3
+  size 50M
+  missingok
+  notifempty
+  prerotate
+    sleep 1
+    /opt/firmware/bin/ha-infocmd sendDailyLog $(basename "$1")
+    sleep 1
+  endscript
+  copytruncate
+}

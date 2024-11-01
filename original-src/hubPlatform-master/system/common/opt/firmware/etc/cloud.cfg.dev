@@ -1,0 +1,6 @@
+{
+    "server": {
+        "coordinator": "https://cloud-dev.ezlo.com:7000/",
+        "server_url_cache": true
+    }
+}

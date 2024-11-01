@@ -1,0 +1,37 @@
+{
+  "id": "scenes_test",
+  "version": "1.0",
+  "type": "gateway",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+      "core",
+      "scenes"
+  ],
+
+  "startup": "scripts/startup",
+  "teardown": "scripts/teardown",
+
+  "gateway": {
+    "name": "scenes_test",
+    "unreachableReasons": [ {
+      "reason": "No Reason",
+      "advice": "No Advice"
+    } ],
+    "unreachableActions": [ {
+      "label": "No Label",
+      "method": "start_exclude"
+    } ],
+    "label": "Scenes Test",
+    "reason": "No Reason",
+    "setItemValueCommand": "HUB:scenes_test/scripts/set_item_value"
+  }
+}
+

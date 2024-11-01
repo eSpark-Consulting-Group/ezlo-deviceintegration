@@ -1,0 +1,21 @@
+#include "version/ha_version.h"
+
+namespace HubPlatform {
+namespace Version {
+
+// Note: ha_version.cpp is generated automatically from ha_version.cpp.in. Don't modify it.
+
+const char HaBranch[] = "@HA_BRANCH@";
+const char HaCommit[] = "@HA_COMMIT@";
+const char HaBuildDate[] = "@HA_BUILD_DATE@";
+const char HaBuilder[] = "@HA_BUILDER@";
+
+std::string git_version() {
+    return std::string( HaBranch ) + "-" + HaCommit + " [" + HaBuildDate + "]";
+}
+std::string ha_version() {
+    return git_version();
+}
+
+}  // namespace Version
+}  // namespace HubPlatform

@@ -1,0 +1,50 @@
+#!/bin/sh /etc/rc.common
+# Based on /etc/init.d/sysfixtime
+# See: https://openwrt.org/docs/techref/initscripts
+
+START=99
+STOP=02
+
+start() {
+    firmware_dir=/opt/firmware
+    $firmware_dir/bin/start.sh
+}
+
+stop() {
+    touch /home/data/storage.bin-lock
+
+    firmware_dir=/opt/firmware
+    $firmware_dir/bin/stop.sh
+}
+
+boot() {
+    logger -t firmware "Booting firmware: calculate system time by firmware files"
+    local maxtime="$(calc_recently_modified_file_time)"
+    local curtime="$(date +%s)"
+    [ $curtime -lt $maxtime ] && date -s @$maxtime \
+        && logger -t firmware "updated system time from /home recently modified files: '$(date -d @$maxtime)'"
+
+    logger -t firmware "Starting firmware"
+    start "$@"
+}
+
+shutdown() {
+    # rotate logs before shutdown, power-off
+    logger -t firmware "Rotating logs before shutdown/power-off"
+    local firmware_dir=/opt/firmware
+    $firmware_dir/bin/logcmd --store-to-postponed && logger -t firmware "logs rotated before shutdown successfully"
+    logger -t firmware "Rotating logs before shutdown/power-off: completed"
+
+    logger -t firmware "Stopping firmware"
+    stop
+}
+
+calc_recently_modified_file_time() {
+    local file newest
+    local firmware_home_dir=/home
+
+    for file in $(find -L $firmware_home_dir -type f -maxdepth 4); do
+        [ -z "$newest" -o "$newest" -ot "$file" ] && newest=$file
+    done
+    [ "$newest" ] && date -r "$newest" +%s
+}

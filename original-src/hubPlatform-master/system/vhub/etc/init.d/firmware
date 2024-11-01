@@ -1,0 +1,32 @@
+#!/bin/sh
+
+. /lib/lsb/init-functions
+
+start_firmware() {
+        firmware_dir=/opt/firmware
+        $firmware_dir/bin/start.sh
+}
+
+stop_firmware() {
+        firmware_dir=/opt/firmware
+        $firmware_dir/bin/stop.sh
+}
+
+case "$1" in
+start)	log_daemon_msg "Starting firmware service" "firmware"
+        start_firmware
+        log_end_msg $?
+	;;
+stop)	log_daemon_msg "Stopping firmware service" "firmware"
+        stop_firmware
+        log_end_msg $?
+        ;;
+restart) log_daemon_msg "Restarting firmware service" "firmware"
+        $0 stop
+        $0 start
+        ;;
+*)	log_action_msg "Usage: /etc/init.d/firmware {start|stop|restart}"
+        exit 2
+        ;;
+esac
+exit 0

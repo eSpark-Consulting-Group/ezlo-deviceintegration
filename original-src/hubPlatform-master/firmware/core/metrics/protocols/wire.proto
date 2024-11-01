@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option go_package = "./metrics";
+
+message Wire {
+  int32 version = 1;
+  bytes signature = 2;
+  bytes encryptedKey = 3;
+  bytes iv = 4;
+  bytes encryptedBytes = 5;
+  bytes certificate = 6;
+}

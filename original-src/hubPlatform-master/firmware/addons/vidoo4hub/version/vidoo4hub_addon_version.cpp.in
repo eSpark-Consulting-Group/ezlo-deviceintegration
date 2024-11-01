@@ -1,0 +1,13 @@
+#include "cameras/version/cameras_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Vidoo4Hub {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_VIDOO4HUB_VERSION@" );
+}
+
+}  // namespace Vidoo4Hub
+}  // namespace Addons
+}  // namespace HubPlatform

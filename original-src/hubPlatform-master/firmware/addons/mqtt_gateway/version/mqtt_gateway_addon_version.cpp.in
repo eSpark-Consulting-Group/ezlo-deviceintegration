@@ -1,0 +1,13 @@
+#include "cameras/version/cameras_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace MQTTGateway {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_MQTT_GATEWAY_VERSION@" );
+}
+
+}  // namespace MQTTGateway
+}  // namespace Addons
+}  // namespace HubPlatform

@@ -1,0 +1,6 @@
+/var/log/firmware/*.log {
+  su root root
+  rotate 1
+  copytruncate
+  notifempty
+}

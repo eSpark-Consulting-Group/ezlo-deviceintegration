@@ -1,0 +1,1 @@
+print("house_modes_test startup: required for nma_api_tests: required gateways should have startup script")

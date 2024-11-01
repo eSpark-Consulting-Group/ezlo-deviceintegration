@@ -1,0 +1,24 @@
+#include "cored/house_modes/script_events/house_mode_exit_time_runs_out.h"
+#include "cored/house_modes/resources/house_mode_resources.h"
+
+namespace HubPlatform {
+namespace CoreDHouseModes {
+namespace ScriptEvents {
+
+HouseModeExitTimeRunsOut::HouseModeExitTimeRunsOut( bool silent, std::chrono::seconds timestamp )
+: BaseEvent( Resources::ScriptEvents::Name::HouseModeExitTimeRunsOut )
+, m_silent( silent )
+, m_timestamp( timestamp ) {}
+
+Json HouseModeExitTimeRunsOut::toJson() const {
+    auto result = BaseEvent::toJson();
+
+    result[ "silent" ] = m_silent;
+    result[ "timestamp" ] = m_timestamp.count();
+
+    return result;
+}
+
+}  // namespace ScriptEvents
+}  // namespace CoreDHouseModes
+}  // namespace HubPlatform

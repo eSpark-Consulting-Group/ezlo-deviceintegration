@@ -1,0 +1,12 @@
+// Note: uid_tests_defs.cpp is generated automatically from uid_tests_defs.cpp.in. Don't modify it.
+
+namespace HubPlatform {
+namespace Uid {
+namespace UT {
+
+const char LocalUser[] = "@LOCAL_USER@";
+const char LocalUserPassword[] = "@LOCAL_USER_PASSWORD@";
+
+}  // namespace UT
+}  // namespace Uid
+}  // namespace HubPlatform

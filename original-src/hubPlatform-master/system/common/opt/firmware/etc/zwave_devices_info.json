@@ -1,0 +1,3280 @@
+{
+ "device_subtypes": [
+  {
+   "id": 0,
+   "name": "device"
+  },
+  {
+   "id": 1,
+   "name": "sensor"
+  },
+  {
+   "id": 2,
+   "name": "sensor.motion"
+  },
+  {
+   "id": 3,
+   "name": "sensor.multisensor"
+  },
+  {
+   "id": 4,
+   "name": "light.bulb"
+  },
+  {
+   "id": 5,
+   "name": "light.strip"
+  },
+  {
+   "id": 6,
+   "name": "light.controller"
+  },
+  {
+   "id": 7,
+   "name": "thermostat"
+  },
+  {
+   "id": 8,
+   "name": "switch.outlet"
+  },
+  {
+   "id": 9,
+   "name": "dimmer.outlet"
+  },
+  {
+   "id": 10,
+   "name": "switch.inwall"
+  },
+  {
+   "id": 11,
+   "name": "dimmer.inwall"
+  },
+  {
+   "id": 12,
+   "name": "multi.outlet"
+  },
+  {
+   "id": 13,
+   "name": "doorlock"
+  },
+  {
+   "id": 14,
+   "name": "siren"
+  },
+  {
+   "id": 15,
+   "name": "doorbell"
+  },
+  {
+   "id": 16,
+   "name": "repeater"
+  },
+  {
+   "id": 17,
+   "name": "shutter.valve"
+  },
+  {
+   "id": 18,
+   "name": "shutter.garage"
+  },
+  {
+   "id": 19,
+   "name": "shutter.roller"
+  },
+  {
+   "id": 20,
+   "name": "controller.remote"
+  },
+  {
+   "id": 21,
+   "name": "controller.portable"
+  },
+  {
+   "id": 22,
+   "name": "mousetrap"
+  },
+  {
+   "id": 23,
+   "name": "transmitter.ir"
+  },
+  {
+   "id": 24,
+   "name": "meter.power"
+  },
+  {
+   "id": 25,
+   "name": "meter.flow"
+  }
+ ],
+ "devices": [
+  {
+   "deviceId": 1,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 0,
+   "model": "ACC-USB-E",
+   "name": "Static PC Controller",
+   "productType": 1,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 0,
+   "model": "SM-00000",
+   "name": "Door lock",
+   "productType": 3,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 1536,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 297,
+   "model": "YRD256/YRD456",
+   "name": "Door Lock",
+   "productType": 32770,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 8,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 0,
+   "model": "ACC-USB-U",
+   "name": "Static PC Controller",
+   "productType": 3,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 8,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 12,
+   "model": "HS-DS100+",
+   "name": "Door/Window Sensor",
+   "productType": 513,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 12340,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 12,
+   "model": "HS-WD100+",
+   "name": "Wall Dimmer",
+   "productType": 17479,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 0,
+   "device_subtype": 13,
+   "item_subtype": 1,
+   "manufacturerId": 26,
+   "model": "Aspire RF9500",
+   "name": "Wall Switch/Dimmer",
+   "productType": 16963,
+   "type": 4,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 26,
+   "model": "Aspire RF9540B",
+   "name": "Wall Switch/Dimmer",
+   "productType": 17481,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 0,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 26,
+   "model": "Aspire RW9505TX",
+   "name": "Split Duplex Receptacle",
+   "productType": 21060,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 0,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 26,
+   "model": "Aspire RF9501DW",
+   "name": "Wall Switch",
+   "productType": 21324,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 29,
+   "model": "DZ15S-1BZ",
+   "name": "Switch",
+   "productType": 13313,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 30,
+   "model": "HSM200",
+   "name": "Motion, temperature and light",
+   "productType": 4,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 57,
+   "model": "YTH8320ZW1007",
+   "name": "Thermostat",
+   "productType": 17,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 20548,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 59,
+   "model": "CONNECT BE-469-NX 2365159",
+   "name": "Touchscreen Deadbolt",
+   "productType": 25409,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 20556,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 59,
+   "model": "FE599 CAM 619 ACC",
+   "name": "Secure Keypad",
+   "productType": 25419,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "SP814-2",
+   "name": "Motion Sensor",
+   "productType": 1,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "SM103",
+   "name": "Door/Window Sensor",
+   "productType": 2,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "HSM02-0",
+   "name": "Door/Window Sensor",
+   "productType": 2,
+   "type": 7,
+   "mainItem": "device"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 96,
+   "model": "AD126-1",
+   "name": "Dimmer",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 10,
+   "item_subtype": 2,
+   "manufacturerId": 96,
+   "model": "AN145-1",
+   "name": "Switch",
+   "productType": 4,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "ST814-2",
+   "name": "Humidity and Temp Sensor",
+   "productType": 6,
+   "type": 9,
+   "mainItem": "temp"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "ST815-2",
+   "name": "Lux Sensor",
+   "productType": 7,
+   "type": 9,
+   "mainItem": "lux"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "ST812-2",
+   "name": "Water Sensor",
+   "productType": 11,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "SE812-2",
+   "name": "Siren",
+   "productType": 12,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "SF813-2",
+   "name": "Smoke Sensor",
+   "productType": 13,
+   "type": 9,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 96,
+   "model": "SP103",
+   "name": "Motion Sensor",
+   "productType": 257,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 99,
+   "model": "ZW3005",
+   "name": "In-Wall Dimmer",
+   "productType": 18756,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12339,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 99,
+   "model": "ZW3004",
+   "name": "In-Wall Dimmer",
+   "productType": 18756,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 99,
+   "model": "ZW1001",
+   "name": "In-Wall Outlet",
+   "productType": 18770,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12338,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 99,
+   "model": "ZW4005",
+   "name": "In-Wall Switch",
+   "productType": 18770,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12339,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 99,
+   "model": "ZW4003",
+   "name": "In-Wall Switch",
+   "productType": 18770,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12595,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 99,
+   "model": "ZW6302",
+   "name": "Smart Motion Sensor",
+   "productType": 18771,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 99,
+   "model": "ZW7101",
+   "name": "Smart LED Bulb",
+   "productType": 19522,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 99,
+   "model": "ZW4201",
+   "name": "Outdoor Switch",
+   "productType": 20304,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 99,
+   "model": "ZW3103",
+   "name": "Dimmer",
+   "productType": 20548,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12337,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 99,
+   "model": "ZW4101",
+   "name": "Switch",
+   "productType": 20562,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 21249,
+   "device_subtype": 20,
+   "item_subtype": 0,
+   "manufacturerId": 99,
+   "model": "ZW5301",
+   "name": "Keypad Controller",
+   "productType": 32776,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 534,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WWA01AA EUW",
+   "name": "Water & Temperature Sensor",
+   "productType": 81,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 534,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WWA01AA",
+   "name": "Water & Temperature Sensor",
+   "productType": 83,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 268,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WWA02AA EUB",
+   "name": "Water & Temperature Sensor",
+   "productType": 97,
+   "type": 9,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 268,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WWA02AA",
+   "name": "Water & Temperature Sensor",
+   "productType": 99,
+   "type": 9,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 768,
+   "device_subtype": 17,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WV-01-050 EU",
+   "name": "Water Valve",
+   "productType": 577,
+   "type": 5,
+   "mainItem": "switch_valve"
+  },
+  {
+   "deviceId": 768,
+   "device_subtype": 17,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "WV-01-050 US",
+   "name": "Water Valve",
+   "productType": 579,
+   "type": 5,
+   "mainItem": "switch_valve"
+  },
+  {
+   "deviceId": 267,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "SSA2",
+   "name": "Siren & Strobe Alarm",
+   "productType": 785,
+   "type": 0,
+   "mainItem": "siren_strobe"
+  },
+  {
+   "deviceId": 267,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "SSA1;2",
+   "name": "Siren & Strobe Alarm",
+   "productType": 787,
+   "type": 0,
+   "mainItem": "siren_strobe"
+  },
+  {
+   "deviceId": 517,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "SSA3",
+   "name": "Siren & Strobe Alarm",
+   "productType": 833,
+   "type": 0,
+   "mainItem": "siren_strobe"
+  },
+  {
+   "deviceId": 517,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "SSA3",
+   "name": "Siren & Strobe Alarm",
+   "productType": 835,
+   "type": 0,
+   "mainItem": "siren_strobe"
+  },
+  {
+   "deviceId": 273,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "MIMOlite",
+   "name": "Switch",
+   "productType": 1107,
+   "type": 5,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 516,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 132,
+   "model": "MIMO",
+   "name": "Switch MIMO",
+   "productType": 1123,
+   "type": 5,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSA03202B-ZWUS",
+   "name": "Minimote",
+   "productType": 1,
+   "type": 1,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 22,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSA22-ZWUS",
+   "name": "Key Fob",
+   "productType": 1,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 38,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSA38-ZWUS",
+   "name": "Panic Button",
+   "productType": 1,
+   "type": 2,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 88,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW088-C",
+   "name": "Key Fob",
+   "productType": 1,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSB04100-ZWUS",
+   "name": "Door/Window Sensor G1",
+   "productType": 2,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 5,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "",
+   "name": "Multisensor",
+   "productType": 2,
+   "type": 6,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 9,
+   "device_subtype": 24,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSB09104-ZWUS",
+   "name": "Home Energy Meter G1",
+   "productType": 2,
+   "type": 13,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 28,
+   "device_subtype": 24,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSB28-ZWUS",
+   "name": "Home Energy Meter G2",
+   "productType": 2,
+   "type": 13,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 29,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSB29-ZWUS",
+   "name": "Door/Window Sensor G2",
+   "productType": 2,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 45,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSB45-ZWUS",
+   "name": "Water Sensor",
+   "productType": 2,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 97,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW097-C",
+   "name": "Dry Contact Sensor",
+   "productType": 2,
+   "type": 9,
+   "mainItem": "sensor_binary"
+  },
+  {
+   "deviceId": 112,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW112-C",
+   "name": "Door/Window Sensor G6",
+   "productType": 2,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 6,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "DSC06106-ZWUS",
+   "name": "Smart Energy Switch",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 8,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "DSC08101-ZWUS",
+   "name": "Smart Energy Illuminator",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 11,
+   "device_subtype": 12,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "DSC11-ZWUS",
+   "name": "Smart Strip 4pos",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 14,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "",
+   "name": "Micro Motor Controller",
+   "productType": 3,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 17,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "",
+   "name": "Micro Double Smart Switch",
+   "productType": 3,
+   "type": 5,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 18,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 134,
+   "model": "DSC18103-ZWUS",
+   "name": "Micro Smart Energy Switch G2",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 24,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "DSC24-ZWUS",
+   "name": "Smart Switch G2",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch",
+   "configurations": [
+      {"channelId": 0,
+       "paramNumber": 90,
+       "paramSize": 1,
+       "paramValue": 1,
+       "setToDefault": false,
+       "paramDescription": "Wt send if update"
+     },
+      {"channelId": 0,
+       "paramNumber": 91,
+       "paramSize": 2,
+       "paramValue": 25,
+       "setToDefault": false,
+       "paramDescription": "Absolute update treshold"
+     },
+      {"channelId": 0,
+       "paramNumber": 92,
+       "paramSize": 1,
+       "paramValue": 5,
+       "setToDefault": false,
+       "paramDescription": "Relative update treshold"
+     },
+      {"channelId": 0,
+       "paramNumber": 80,
+       "paramSize": 1,
+       "paramValue": 2,
+       "setToDefault": false,
+       "paramDescription": "Auto notifications basic report"
+     },
+     {"channelId": 0,
+       "paramNumber": 101,
+       "paramSize": 4,
+       "paramValue": 11,
+       "setToDefault": false,
+       "paramDescription": "Report all meters excluding watts"
+     },
+     {"channelId": 0,
+       "paramNumber": 111,
+       "paramSize": 4,
+       "paramValue": 1200,
+       "setToDefault": false,
+       "paramDescription": "Report period"
+     }
+     ]
+  },
+  {
+   "deviceId": 25,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "DSC25-ZWUS",
+   "name": "Smart Dimmer G2",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 26,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 134,
+   "model": "DSC26103-ZWUS",
+   "name": "Micro Switch G2",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 27,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 134,
+   "model": "DSC27103-ZWUS",
+   "name": "Micro Illuminator G2",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 62,
+   "device_subtype": 18,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW062-C",
+   "name": "Garage Door Controller G5",
+   "productType": 3,
+   "type": 0,
+   "mainItem": "switch_garage_door"
+  },
+  {
+   "deviceId": 98,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW098-C55",
+   "name": "Led RGB Bulb",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 37,
+   "device_subtype": 16,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "DSD37-ZWUS",
+   "name": "Range Extender",
+   "productType": 4,
+   "type": 1,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 88,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW088-A",
+   "name": "Key Fob",
+   "productType": 257,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 89,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW089-A",
+   "name": "Recessed Door/Window Sensor",
+   "productType": 258,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 97,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW097",
+   "name": "Dry Contact Sensor Gen5",
+   "productType": 258,
+   "type": 9,
+   "mainItem": "sensor_binary"
+  },
+  {
+   "deviceId": 100,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW100-A",
+   "name": "Multisensor G6",
+   "productType": 258,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 112,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW112-A",
+   "name": "Door/Window Sensor 6",
+   "productType": 258,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 120,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW120-A",
+   "name": "Door/Window Sensor",
+   "productType": 258,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 130,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW130-A",
+   "name": "WallMote",
+   "productType": 258,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 62,
+   "device_subtype": 18,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW062-A",
+   "name": "Garage Door Controller G5",
+   "productType": 259,
+   "type": 0,
+   "mainItem": "switch_garage_door"
+  },
+  {
+   "deviceId": 78,
+   "device_subtype": 10,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW078-A",
+   "name": "Heavy Duty Smart Switch G5",
+   "productType": 259,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 96,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 134,
+   "model": "ZWZW096-A02",
+   "name": "Smart Switch G6",
+   "productType": 259,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 98,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZWZW098-A52",
+   "name": "Led RGB Bulb",
+   "productType": 259,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 111,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 134,
+   "model": "ZW111-A",
+   "name": "Nano dimmer lighting controller",
+   "productType": 259,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 121,
+   "device_subtype": 5,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW121-A",
+   "name": "LED Strip",
+   "productType": 259,
+   "type": 4,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 56,
+   "device_subtype": 15,
+   "item_subtype": 3,
+   "manufacturerId": 134,
+   "model": "ZW056-A",
+   "name": "Door Bell G5",
+   "productType": 260,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 80,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 134,
+   "model": "ZW080-A17",
+   "name": "Siren G5",
+   "productType": 260,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 21555,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 139,
+   "model": "TZ45",
+   "name": "Thermostat",
+   "productType": 21586,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 144,
+   "model": "910 or 914",
+   "name": "Smartcode",
+   "productType": 1,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 265,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 152,
+   "model": "CT80",
+   "name": "Thermostat CT80",
+   "productType": 20483,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 263,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 152,
+   "model": "CT100",
+   "name": "Thermostat CT100",
+   "productType": 25601,
+   "type": 12
+  },
+  {
+   "deviceId": 256,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 152,
+   "model": "CT100 Plus",
+   "name": "Thermostat CT100 Plus",
+   "productType": 25602,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 12,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 152,
+   "model": "CT101",
+   "name": "Thermostat CT101",
+   "productType": 25857,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 152,
+   "model": "CT110",
+   "name": "Thermostat CT110",
+   "productType": 28162,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 1027,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 265,
+   "model": "ZT1141EU--5",
+   "name": "Wall Remote",
+   "productType": 4100,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 517,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 265,
+   "model": "vs-ZP3102+.us",
+   "name": "Multisensor Duo",
+   "productType": 8194,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 6660,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 265,
+   "model": "ZL7261FR-5",
+   "name": "Power Monitor",
+   "productType": 8218,
+   "type": 5,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 7952,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 265,
+   "model": "ZD2201EU-5",
+   "name": "4 in 1 Door Sensor",
+   "productType": 8223,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 271,
+   "model": "FGD-212",
+   "name": "Dimmer",
+   "productType": 258,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 19,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGS-222",
+   "name": "Roller Shutter",
+   "productType": 770,
+   "type": 4,
+   "mainItem": "switch_motor_controller"
+  },
+  {
+   "deviceId": 4098,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 271,
+   "model": "FGS-211/212",
+   "name": "Switch",
+   "productType": 1026,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4098,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGBS-001",
+   "name": "Universal Sensor",
+   "productType": 1281,
+   "type": 9,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 271,
+   "model": "FGWPx-101",
+   "name": "Wall Plug",
+   "productType": 1536,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGK-10x",
+   "name": "Door/Window Sensor",
+   "productType": 1792,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 8192,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGK-10x",
+   "name": "Door/Window Sensor",
+   "productType": 1792,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 8193,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGK-10x",
+   "name": "Door/Window Sensor",
+   "productType": 1793,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4098,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGK-10x",
+   "name": "Door/Window Sensor",
+   "productType": 1794,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4097,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGMS-001",
+   "name": "Motion Sensor",
+   "productType": 2049,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 8193,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGMS-001 US",
+   "name": "Multisensor",
+   "productType": 2049,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 6,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGRGBWM-441",
+   "name": "RGBW Controller",
+   "productType": 2304,
+   "type": 4,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 8192,
+   "device_subtype": 6,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGRGBWM-441 US",
+   "name": "RGBW Controller",
+   "productType": 2304,
+   "type": 4,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4098,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGFS-101",
+   "name": "Flood Sensor",
+   "productType": 2817,
+   "type": 9,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 8194,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGFS-101 ZW5 US",
+   "name": "Flood Sensor",
+   "productType": 2817,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 4098,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGSD-002",
+   "name": "Smoke Detector",
+   "productType": 3074,
+   "type": 9,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGGC-001 EU",
+   "name": "Gesture control pad ",
+   "productType": 3329,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 8192,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGGC-001 US",
+   "name": "Gesture control pad ",
+   "productType": 3329,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 8192,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGPB-101-3 US",
+   "name": "Panic Button",
+   "productType": 3841,
+   "type": 2,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGKF-601",
+   "name": "Compact Remote",
+   "productType": 4097,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 271,
+   "model": "FGCD-001",
+   "name": "CO Sensor",
+   "productType": 4609,
+   "type": 15,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 278,
+   "model": "HSP02-0",
+   "name": "Motion Sensor",
+   "productType": 1,
+   "type": 10,
+   "mainItem": "motion"
+   
+  },
+  {
+   "deviceId": 6,
+   "device_subtype": 19,
+   "item_subtype": 0,
+   "manufacturerId": 280,
+   "model": "TZ08EU",
+   "name": "Roller shutter controller",
+   "productType": 1,
+   "type": 0,
+   "mainItem": "switch_motor_controller"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 280,
+   "model": "TZ68E",
+   "name": "Plug-In Switch",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 280,
+   "model": "TZ56D",
+   "name": "Plug-In Switch",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4128,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 280,
+   "model": "TZ71",
+   "name": "Plug-In Switch",
+   "productType": 258,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 1297,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 280,
+   "model": "TZ68E",
+   "name": "Plug-In Switch",
+   "productType": 514,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 1539,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 282,
+   "model": "ZW20R",
+   "name": "Duplex Receptacle",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 282,
+   "model": "ZWN-333M-PLUS",
+   "name": "Smart Metering Plug",
+   "productType": 273,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 513,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 282,
+   "model": "ZW500DM-PLUS",
+   "name": "Smart Dimmer/Switch",
+   "productType": 273,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 2305,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 282,
+   "model": "ZWN-PBC",
+   "name": "Motion Sensor",
+   "productType": 1537,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 287,
+   "model": "PIRZWAVE1",
+   "name": "Motion Sensor",
+   "productType": 1,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 287,
+   "model": "DW-ZWAVE1",
+   "name": "Door/Window Sensor",
+   "productType": 1,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 0,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 297,
+   "model": "YRD220ZW619",
+   "name": "Door Lock",
+   "productType": 2,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 521,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 297,
+   "model": "YRD220ZW605",
+   "name": "Door Lock",
+   "productType": 2,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 0,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 297,
+   "model": "YRD210ZW605",
+   "name": "Door Lock",
+   "productType": 4,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 521,
+   "device_subtype": 13,
+   "item_subtype": 0,
+   "manufacturerId": 297,
+   "model": "YRD210ZW521",
+   "name": "Door Lock",
+   "productType": 4,
+   "type": 14,
+   "mainItem": "door_lock"
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 305,
+   "model": "rgbw2.us",
+   "name": "RGBW BULB",
+   "productType": 2,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 305,
+   "model": "ph-psm02.eu",
+   "name": "Multisensor Quad",
+   "productType": 2,
+   "type": 6,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 312,
+   "model": "ZSMOKE",
+   "name": "Smoke Sensor",
+   "productType": 1,
+   "type": 15,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 312,
+   "model": "ZCOMBO",
+   "name": "Smoke and CO Sensor",
+   "productType": 1,
+   "type": 15,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 12,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PST-02A/B/C",
+   "name": "Multisensor",
+   "productType": 2,
+   "type": 6,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 14,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "ph-psm01.us",
+   "name": "Multisensor Trio",
+   "productType": 2,
+   "type": 6,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 30,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PSG01-1/2",
+   "name": "Smoke Sensor",
+   "productType": 2,
+   "type": 9,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 31,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PAT02-2A",
+   "name": "Flood Multisensor",
+   "productType": 2,
+   "type": 6,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 10,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PSE02-1/2B",
+   "name": "Siren & Strobe Alarm",
+   "productType": 4,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 29,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PH-PSR03.US",
+   "name": "Remote",
+   "productType": 8,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 34,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 316,
+   "model": "PSR04",
+   "name": "Smart Color Button",
+   "productType": 9,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "PIR-ZWAVE2",
+   "name": "Motion Sensor",
+   "productType": 1,
+   "type": 9,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "DW-ZWAVE2",
+   "name": "Door/Window Sensor",
+   "productType": 1,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "TILT-ZWAVE2",
+   "name": "Door Tilt Sensor",
+   "productType": 1,
+   "type": 11,
+   "mainItem": "tilt_binary"
+  },
+  {
+   "deviceId": 1,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "PIR-ZWAVE2.5",
+   "name": "Motion Sensor",
+   "productType": 4,
+   "type": 9,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "DW-ZWAVE2.5",
+   "name": "Door/Window Sensor",
+   "productType": 4,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 10,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "SC-ZWAVE5",
+   "name": "Siren+Chime",
+   "productType": 5,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 16,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 330,
+   "model": "FLF-ZWAVE5",
+   "name": "Flood/Freeze Sensor",
+   "productType": 5,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 258,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "WADWAZ-1",
+   "name": "Door/Window Sensor",
+   "productType": 8193,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 515,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "WAPIRZ-1",
+   "name": "Motion Sensor",
+   "productType": 8194,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 2307,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "WA105DBZ-1",
+   "name": "Siren",
+   "productType": 8201,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 12336,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 335,
+   "model": "PD300Z-2",
+   "name": "Dimmer",
+   "productType": 17488,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12340,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "WD500Z-1",
+   "name": "Switch/Dimmer",
+   "productType": 17495,
+   "type": 4,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 13105,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "WD1000Z-1",
+   "name": "Wall Switch/Dimmer",
+   "productType": 17495,
+   "type": 4,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12336,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "GB00Z",
+   "name": "Glass Break Detector",
+   "productType": 18242,
+   "type": 9,
+   "mainItem": "glassbreak"
+  },
+  {
+   "deviceId": 12336,
+   "device_subtype": 18,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "GD00Z-4",
+   "name": "Garage Door Opener",
+   "productType": 18244,
+   "type": 0,
+   "mainItem": "switch_garage_door"
+  },
+  {
+   "deviceId": 12344,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "LBR30Z-1",
+   "name": "Led Bulb",
+   "productType": 18260,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12595,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "LB65R6Z-1",
+   "name": "Led Switch/Dimmer",
+   "productType": 19522,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 12595,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "FS20Z-1",
+   "name": "Fixture Module",
+   "productType": 21062,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12336,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 335,
+   "model": "PS15Z-2",
+   "name": "Wall Switch",
+   "productType": 21072,
+   "type": 5,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 13616,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "WO15Z-1",
+   "name": "Wall Outlet",
+   "productType": 21074,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 13619,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "WS15Z-1",
+   "name": "Wall Switch",
+   "productType": 21079,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 12594,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "WA00Z-1",
+   "name": "Remote Switch/Dimmer",
+   "productType": 21315,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 21553,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "GC-TBZ48",
+   "name": "Thermostat",
+   "productType": 21570,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 21558,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 335,
+   "model": "GC-TBZ48",
+   "name": "Thermostat",
+   "productType": 21570,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 12339,
+   "device_subtype": 0,
+   "item_subtype": 1,
+   "manufacturerId": 335,
+   "model": "WT00Z-1",
+   "name": "Remote  Switch",
+   "productType": 21591,
+   "type": 5,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 338,
+   "model": "ZSE01",
+   "name": "Indoor Siren",
+   "productType": 3,
+   "type": 0,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 338,
+   "model": "SM-A804N",
+   "name": "Gas/Smoke Detector",
+   "productType": 1280,
+   "type": 15,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 360,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 346,
+   "model": "HS1DS-Z",
+   "name": "Door/Window Sensor",
+   "productType": 360,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 5,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 346,
+   "model": "SM-a809a (A809N)",
+   "name": "Leak Detector",
+   "productType": 4099,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 19,
+   "item_subtype": 0,
+   "manufacturerId": 346,
+   "model": "SM-500A",
+   "name": "Curtain Shutter",
+   "productType": 4103,
+   "type": 5,
+   "mainItem": "switch_motor_controller"
+  },
+  {
+   "deviceId": 4865,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-P210-US",
+   "name": "Energy Dimmer",
+   "productType": 8458,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 513,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH6-HP-EU",
+   "name": "Thermostat",
+   "productType": 1540,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 12546,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH7-EH-EU",
+   "name": "Thermostat",
+   "productType": 1793,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 12546,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH8-FC-EU",
+   "name": "Thermostat",
+   "productType": 2049,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 513,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH-3700-HP-US",
+   "name": "Thermostat",
+   "productType": 2052,
+   "type": 12,
+   "mainItem": ""
+   
+  },
+  {
+   "deviceId": 513,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH10-PM2.5-WD",
+   "name": "Multisensor",
+   "productType": 2565,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S210-US",
+   "name": "Mini Energy Switch",
+   "productType": 8450,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 258,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S212-US",
+   "name": "Mini Power Switch",
+   "productType": 8450,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 513,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S210-EU",
+   "name": "Mini Energy Switch",
+   "productType": 8450,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4690,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S220-EU",
+   "name": "Micro Switch",
+   "productType": 8705,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 256,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S220-US",
+   "name": "Micro Switch",
+   "productType": 8706,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4946,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-P220-EU",
+   "name": "Micro Dimmer",
+   "productType": 8714,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH-3700-HP-US",
+   "name": "Thermostat",
+   "productType": 14084,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-P511-US",
+   "name": "Touch Panel Dimmer",
+   "productType": 20737,
+   "type": 4,
+   "mainItem": "dimmer"
+   
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S511-US",
+   "name": "Touch Panel Switch",
+   "productType": 20738,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 258,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S512-US",
+   "name": "Touch Panel Switch 2pos",
+   "productType": 20738,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 259,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 351,
+   "model": "MH-S513-US",
+   "name": "Touch Panel Switch 3pos",
+   "productType": 20738,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH-A100-CO2-WD",
+   "name": "CO2 Sensor",
+   "productType": 41285,
+   "type": 9,
+   "mainItem": "alarm_co2"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 351,
+   "model": "MH-A100-PM2.5-WD",
+   "name": "Multisensor",
+   "productType": 41317,
+   "type": 9,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 357,
+   "model": "CRC-3US-6",
+   "name": "The Soft Remote",
+   "productType": 2,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 12338,
+   "device_subtype": 9,
+   "item_subtype": 2,
+   "manufacturerId": 388,
+   "model": "PD-100",
+   "name": "Plug-In Dimmer/Lamp Module",
+   "productType": 18244,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 410,
+   "model": "Strips-MaZw",
+   "name": "Strip Door/Window Sensor",
+   "productType": 3,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-RGB01-EU",
+   "name": "Led RGB Bulb",
+   "productType": 256,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 10,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 520,
+   "model": "HKZW-SO05",
+   "name": "Smart Plug",
+   "productType": 256,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 3,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 520,
+   "model": "HKZW-SW01",
+   "name": "Smart Switch",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4,
+   "device_subtype": 4,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-RGB01",
+   "name": "Led RGB Bulb",
+   "productType": 257,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+  {
+   "deviceId": 5,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 520,
+   "model": "HKZW-SO01",
+   "name": "Smart Plug",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 7,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-ACC01",
+   "name": "AV Control",
+   "productType": 257,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 10,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 520,
+   "model": "HKZW-SO03",
+   "name": "Smart Plug",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 13,
+   "device_subtype": 8,
+   "item_subtype": 1,
+   "manufacturerId": 520,
+   "model": "HKZW-SW02",
+   "name": "Smart Switch",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 6,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-MS01",
+   "name": "Multisensor",
+   "productType": 512,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 8,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-DWS01",
+   "name": "Door/Window Sensor",
+   "productType": 512,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 9,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-SCN01-EU",
+   "name": "Scene Controller One-key",
+   "productType": 512,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 11,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-SCN04-EU",
+   "name": "Scene Controller Four-key",
+   "productType": 512,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 6,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-MS01",
+   "name": "Multisensor",
+   "productType": 513,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 8,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-DWS01",
+   "name": "Door/Window Sensor",
+   "productType": 513,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 9,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-SCN01-US",
+   "name": "Scene Controller One-key",
+   "productType": 513,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 11,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-SCN04-US",
+   "name": "Scene Controller Four-key",
+   "productType": 513,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 532,
+   "model": "",
+   "name": "Motion Sensor",
+   "productType": 2,
+   "type": 10,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 540,
+   "model": "HS1MS",
+   "name": "Motion Sensor",
+   "productType": 32769,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 540,
+   "model": "HS1SA",
+   "name": "Smoke Sensor",
+   "productType": 32770,
+   "type": 9,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 540,
+   "model": "HS1CA",
+   "name": "Gas Sensor",
+   "productType": 32771,
+   "type": 15,
+   "mainItem": "alarm_gas"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 540,
+   "model": "HS1WL",
+   "name": "Water Sensor",
+   "productType": 32772,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 17,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMWV1",
+   "name": "Water Valve",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch_valve"
+  },
+  {
+   "deviceId": 131,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMMS1",
+   "name": "Motion Sensor",
+   "productType": 3,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 133,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMWS1",
+   "name": "Water Sensor",
+   "productType": 3,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 135,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 543,
+   "model": "DMO1F",
+   "name": "Wall Plug",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 136,
+   "device_subtype": 14,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMSO1",
+   "name": "Siren",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "siren"
+  },
+  {
+   "deviceId": 257,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMWD1",
+   "name": "Door/Window Sensor",
+   "productType": 3,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4226,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 543,
+   "model": "DMWD1",
+   "name": "Door/Window Sensor",
+   "productType": 3,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4231,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 543,
+   "model": "DMO1F",
+   "name": "Wall Plug",
+   "productType": 3,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 131,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 600,
+   "model": "SM-a803n",
+   "name": "Motion Sensor",
+   "productType": 3,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 4227,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 600,
+   "model": "SM-a803A",
+   "name": "Motion Sensor",
+   "productType": 3,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 360,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1DS-Z",
+   "name": "Magnetic Door Sensor",
+   "productType": 360,
+   "type": 7,
+   "mainItem": "dwsensor"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1MS-Z",
+   "name": "Motion Sensor",
+   "productType": 32769,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1SA-Z",
+   "name": "Smoke Sensor",
+   "productType": 32770,
+   "type": 9,
+   "mainItem": "alarm_smoke"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1CG-Z",
+   "name": "Combustible Gas Sensor",
+   "productType": 32771,
+   "type": 15,
+   "mainItem": "alarm_gas"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1WL-Z",
+   "name": "Water Sensor",
+   "productType": 32772,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 608,
+   "model": "HS2SK-Z-EU",
+   "name": "Smart Metering Plug",
+   "productType": 32774,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 4096,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 608,
+   "model": "HS1HT-Z",
+   "name": "Smart Temperature and Humidity Sensor",
+   "productType": 32775,
+   "type": 6,
+   "mainItem": "temp"
+  },
+  {
+   "deviceId": 131,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 634,
+   "model": "ZSE09",
+   "name": "Multisensor",
+   "productType": 3,
+   "type": 6,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 133,
+   "device_subtype": 1,
+   "item_subtype": 0,
+   "manufacturerId": 634,
+   "model": "ZSE30",
+   "name": "Water Sensor",
+   "productType": 3,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 10,
+   "device_subtype": 8,
+   "item_subtype": 2,
+   "manufacturerId": 634,
+   "model": "ZEN06",
+   "name": "Smart Plug",
+   "productType": 257,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 9500,
+   "device_subtype": 12,
+   "item_subtype": 2,
+   "manufacturerId": 786,
+   "model": "ZW37",
+   "name": "Smart Plug (2-Channel)",
+   "productType": 45601,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 34064,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZRC-90US",
+   "name": "Portable Scene Controller US",
+   "productType": 0,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 33664,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZRC-100EU",
+   "name": "Portable Scene Controller",
+   "productType": 1,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 34064,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZRC-90EU",
+   "name": "Portable Scene Controller EU",
+   "productType": 1,
+   "type": 3,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 33649,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZXT-310US",
+   "name": "AV Control Point",
+   "productType": 256,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 33655,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZXT-120US",
+   "name": "IR-Extender",
+   "productType": 256,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 33649,
+   "device_subtype": 0,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZXT-310EU",
+   "name": "AV Control Point",
+   "productType": 257,
+   "type": 0,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 32817,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZTS-110US",
+   "name": "Z-Thermostat",
+   "productType": 512,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 33136,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZTS-500US",
+   "name": "Z-Thermostat",
+   "productType": 512,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 2,
+   "device_subtype": 10,
+   "item_subtype": 1,
+   "manufacturerId": 21076,
+   "model": "ZFM-80US",
+   "name": "Fixture Switch Module",
+   "productType": 32768,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 33072,
+   "device_subtype": 0,
+   "item_subtype": 2,
+   "manufacturerId": 21076,
+   "model": "ZDS-200NA",
+   "name": "Dimming Switch Module",
+   "productType": 33280,
+   "type": 5,
+   "mainItem": "switch"
+  },
+  {
+   "deviceId": 32817,
+   "device_subtype": 7,
+   "item_subtype": 0,
+   "manufacturerId": 21076,
+   "model": "ZTS110",
+   "name": "Z-Thermostat",
+   "productType": 512,
+   "type": 12,
+   "mainItem": ""
+  },
+  {
+   "deviceId": 18,
+   "device_subtype": 2,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-MS02-US",
+   "name": "Motion Sensor",
+   "productType": 513,
+   "type": 10,
+   "mainItem": "motion"
+  },
+  {
+   "deviceId": 15,
+   "device_subtype": 3,
+   "item_subtype": 0,
+   "manufacturerId": 520,
+   "model": "HKZW-FLD01-US",
+   "name": "Flood Sensor",
+   "productType": 513,
+   "type": 8,
+   "mainItem": "alarm_sensor_water"
+  },
+  {
+   "deviceId": 12340,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 789,
+   "model": "ZWP-WD-100",
+   "name": "In-Wall Dimmer",
+   "productType": 17479,
+   "type": 4,
+   "mainItem": "dimmer"
+  },
+ {
+  "deviceId": 12337,
+  "device_subtype": 8,
+  "item_subtype": 1,
+  "manufacturerId": 789,
+  "model": "ZL-PA-100",
+  "name": "Plug-In Switch",
+  "productType": 17479,
+  "type": 4,
+  "mainItem": "switch"
+ },
+ {
+  "deviceId": 12339,
+  "device_subtype": 10,
+  "item_subtype": 0,
+  "manufacturerId": 789,
+  "model": "ZWP-WS-100",
+  "name": "In-Wall Switch",
+  "productType": 17479,
+  "type": 5,
+  "mainItem": "switch"
+ },
+ {
+  "deviceId": 12338,
+  "device_subtype": 9,
+  "item_subtype": 1,
+  "manufacturerId": 789,
+  "model": "ZL-PD-100",
+  "name": "Plug-In Dimmer",
+  "productType": 18244,
+  "type": 4,
+  "mainItem": "dimmer"
+ }
+
+ ],
+ "item_subtypes": [
+  {
+   "id": 0,
+   "name": ""
+  },
+  {
+   "id": 1,
+   "name": "inwall"
+  },
+  {
+   "id": 2,
+   "name": "plug"
+  },
+  {
+   "id": 3,
+   "name": "doorbell"
+  }
+ ],
+ "manufacturers": [
+  {
+   "id": 0,
+   "name": "Sigma Designs"
+  },
+  {
+   "id": 12,
+   "name": "HomeSeer"
+  },
+  {
+   "id": 26,
+   "name": "Cooper/EATON"
+  },
+  {
+   "id": 29,
+   "name": "Leviton"
+  },
+  {
+   "id": 30,
+   "name": "HomeSeer"
+  },
+  {
+   "id": 57,
+   "name": "Honeywell"
+  },
+  {
+   "id": 59,
+   "name": "Schlage"
+  },
+  {
+   "id": 96,
+   "name": "Everspring"
+  },
+  {
+   "id": 99,
+   "name": "JASCO"
+  },
+  {
+   "id": 132,
+   "name": "FortrezZ"
+  },
+  {
+   "id": 134,
+   "name": "Aeon Labs"
+  },
+  {
+   "id": 139,
+   "name": "Trane"
+  },
+  {
+   "id": 144,
+   "name": "Kwikset"
+  },
+  {
+   "id": 152,
+   "name": "RTCA"
+  },
+  {
+   "id": 265,
+   "name": "Vision/Zipato"
+  },
+  {
+   "id": 271,
+   "name": "Fibaro"
+  },
+  {
+   "id": 278,
+   "name": "Everspring"
+  },
+  {
+   "id": 280,
+   "name": "TKBHOME"
+  },
+  {
+   "id": 282,
+   "name": "Enerwave"
+  },
+  {
+   "id": 287,
+   "name": "Schlage"
+  },
+  {
+   "id": 297,
+   "name": "Yale"
+  },
+  {
+   "id": 305,
+   "name": "Zipato"
+  },
+  {
+   "id": 312,
+   "name": "First Alert"
+  },
+  {
+   "id": 316,
+   "name": "Philio/Zipato"
+  },
+  {
+   "id": 330,
+   "name": "Ecolink"
+  },
+  {
+   "id": 335,
+   "name": "Linear/GoControl"
+  },
+  {
+   "id": 338,
+   "name": "Xenon/Zooz"
+  },
+  {
+   "id": 346,
+   "name": "Xenon"
+  },
+  {
+   "id": 351,
+   "name": "Mcohome"
+  },
+  {
+   "id": 357,
+   "name": "Nodon"
+  },
+  {
+   "id": 388,
+   "name": "Dragon Tech"
+  },
+  {
+   "id": 410,
+   "name": "Sensative"
+  },
+  {
+   "id": 520,
+   "name": "Hank"
+  },
+  {
+   "id": 532,
+   "name": "Besense"
+  },
+  {
+   "id": 540,
+   "name": "Heiman"
+  },
+  {
+   "id": 543,
+   "name": "Dome"
+  },
+  {
+   "id": 600,
+   "name": "Xenon"
+  },
+  {
+   "id": 608,
+   "name": "Heiman"
+  },
+  {
+   "id": 634,
+   "name": "Zooz"
+  },
+  {
+   "id": 786,
+   "name": "Inovelli"
+  },
+  {
+   "id": 789,
+   "name": "ZWP/ZLINK"
+  },
+  {
+   "id": 21076,
+   "name": "Remotec"
+  }
+ ],
+ "types": [
+  {
+   "id": 0,
+   "name": "Device"
+  },
+  {
+   "id": 1,
+   "name": "Portable Controller"
+  },
+  {
+   "id": 2,
+   "name": "Panicbutton"
+  },
+  {
+   "id": 3,
+   "name": "Remote controller"
+  },
+  {
+   "id": 4,
+   "name": "Dimmer"
+  },
+  {
+   "id": 5,
+   "name": "Switch"
+  },
+  {
+   "id": 6,
+   "name": "Multisensor"
+  },
+  {
+   "id": 7,
+   "name": "Door/window sensor"
+  },
+  {
+   "id": 8,
+   "name": "Water leak sensor"
+  },
+  {
+   "id": 9,
+   "name": "Sensor"
+  },
+  {
+   "id": 10,
+   "name": "Motion sensor"
+  },
+  {
+   "id": 11,
+   "name": "Tilt sensor"
+  },
+  {
+   "id": 12,
+   "name": "Thermostat"
+  },
+  {
+   "id": 13,
+   "name": "Meter"
+  },
+  {
+   "id": 14,
+   "name": "Door Lock"
+  },
+  {
+   "id": 15,
+   "name": "Gas sensor"
+  }
+ ],
+ "temporary_not_integrated": [
+  {
+   "deviceId": 19,
+   "device_subtype": 11,
+   "item_subtype": 1,
+   "manufacturerId": 134,
+   "model": "DSC19103-ZWUS",
+   "name": "Micro Smart Energy Illuminator G2",
+   "productType": 3,
+   "type": 4,
+   "mainItem": "dimmer"
+  }
+ ],
+  "extra_fields": {
+    "default": {
+      "showAsRuleExcludedItems": [],
+      "hasGetter": true,
+      "hasSetter": true
+    }
+  }
+}

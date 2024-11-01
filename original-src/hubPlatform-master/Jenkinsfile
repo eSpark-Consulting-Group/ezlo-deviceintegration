@@ -1,0 +1,498 @@
+#!/usr/bin/env groovy
+
+issue_pattern = "EZZB-\\d+|EFWR-\\d+|EZZB-\\d+|ECMT-\\d+|EATT-\\d+|ELET-\\d+"
+jira_id_enforcement = false
+
+slack_channel = "#firmware_builds"
+
+current_branch = env.BRANCH_NAME
+passed_builds = []
+included_jira_ids = []
+jira_transition = []
+//jira_parent = []
+build_versions = []
+default_changelog = "\n  Changelog: "
+default_exit_error = "\n  ERROR: "
+default_jira_id_warning = "\n  MISSING JIRA ID for: "
+default_status_warning = "\n  Status Validation FAILED for: "
+result_changelog = default_changelog
+exit_error = default_exit_error
+jira_id_warning = default_jira_id_warning
+status_warning = default_status_warning
+def jira_types = ['Defect', 'Bug', 'Sub-task', 'Task', 'Story']
+def jira_statuses = ['Defect': 'Fixed', 'Bug': 'RESOLVED', 'Sub-task': 'RESOLVED', 'Task': 'RESOLVED', 'Story':'RESOLVED']
+def ready_for_qa_transitions = ['Defect': '151', 'Bug': '51', 'Sub-task': '61', 'Task': '51', 'Story': '271']
+branch_pattern = "release/(.*)"
+INCLUDE_h2_1_h2_secure_1 = false
+INCLUDE_g150 = false
+INCLUDE_beewave_1 = false
+
+def notifications2MainBranches(String build_status = 'STARTED') {
+	// build status of null means successful
+	build_status = build_status ?: 'SUCCESS'
+	if ( current_branch.equals('master') || current_branch.matches("${branch_pattern}") ) {
+		// Default Color Values
+		def colorName = 'RED'
+		def colorCode = '#FF0000'
+		
+		// Text
+		def subject = "${build_status}: Job '${env.JOB_NAME} [HubPlatform-${current_branch}-${env.BUILD_NUMBER}]'"
+		def summary = "${subject} (${env.BUILD_URL})"
+
+		// Override default values based on build status
+		if (build_status == 'STARTED') {
+			color = 'YELLOW'
+			colorCode = '#FFFF00'
+		}
+		else if (build_status == 'SUCCESS') {
+			color = 'GREEN'
+			colorCode = '#228B22'
+			summary = "Firmware[*HubPlatform-${current_branch}-${env.BUILD_NUMBER}*] has been built and checked at \n${env.BUILD_URL}"
+		}
+		else {
+			color = 'RED'
+			colorCode = '#FF0000'
+		}
+
+		if ( exit_error == default_exit_error) {
+			exit_error = ""
+		}
+		if ( jira_id_warning == default_jira_id_warning ) {
+			jira_id_warning = ""
+		}
+		if ( status_warning == default_status_warning) {
+			status_warning = ""
+		}
+		if ( result_changelog == default_changelog ) {
+			result_changelog = ""
+		}
+
+		def smileMark = ":gear:"
+		if ( current_branch.equals('master') ) {
+			smileMark = ":hammer_and_wrench:"
+		}
+
+		summary = "${smileMark} ${summary} ${exit_error}${result_changelog}"
+		slackSend (channel: slack_channel, color: colorCode, message: summary)
+
+		if ( jira_id_warning != "" || status_warning != "" ) {
+			warnings = "${jira_id_warning}${status_warning}"
+			slackSend (channel: slack_channel, color: '#0000FF', message: warnings)
+		}
+		if ( jira_id_warning != "") {
+			mail (to: 'jiraid-validation@ezlo.com',
+			subject: "Firmware(HubPlatform) ${current_branch} ${env.BUILD_NUMBER} missing JIRA IDs",
+			body: " \nGit Branch: ${current_branch} Git Hash: ${env.GIT_COMMIT} \n${jira_id_warning}"
+			)
+		}
+		mail (to: 'hubplatform-builds@ezlo.com',
+			subject: "${subject}",
+			body: " \n${build_status}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' \n\nGit Branch: ${current_branch} Git Hash: ${env.GIT_COMMIT} \n${exit_error}${jira_id_warning}${status_warning}\n${result_changelog}"
+		)
+	}
+}
+
+def getBranchLogLevel(branch_name) {
+	switch (branch_name) {
+		case 'master':
+			return "DEBUG"
+		case ~/${branch_pattern}/:
+			return "INFO"
+		default:
+			return "DEBUG"
+	}
+}
+
+def getTagVersion(branch_name, build_number) {
+	switch (branch_name) {
+		case 'master':
+			return "release/${build_number}"
+		case ~/${branch_pattern}/:
+			return "${branch_name}.${build_number}"
+		default:
+			return "${branch_name}.${build_number}"
+	}
+}
+
+def tag2MainBranches(tag_ver) {
+	if ( current_branch.equals('master') || current_branch.matches("${branch_pattern}") ) {
+		def tag_message = "Tag for version " + "${tag_ver}"
+		withCredentials([usernamePassword(credentialsId: '30e56f0f-2720-48e8-9f0a-18db5e14ceed', passwordVariable: 'GIT_PASS', usernameVariable: 'GIT_USER')]) {
+			sh " git tag -a '${tag_ver}' -m '${tag_message}' && git push https://$GIT_USER:$GIT_PASS@github.com/ezloteam/hubPlatform.git 'refs/tags/${tag_ver}'"
+			}
+		}
+}
+
+def tag_version = getTagVersion(current_branch, "${env.BUILD_NUMBER}")
+def release_version = tag_version.replaceAll("release/","").replaceAll("/","_")
+
+def deploy_h2_firmware_path = "build/firmware/h2.1/snapshots/${release_version}"
+def deploy_h2_secure_firmware_path = "build/firmware/h2_secure.1/snapshots/${release_version}"
+def deploy_g150_firmware_path = "build/firmware/g150/snapshots/${release_version}"
+def deploy_beewave_firmware_path = "build/firmware/beewave.1/snapshots/${release_version}"
+def log_level = getBranchLogLevel(current_branch)
+def parallel_build = 4
+
+// echo log level here
+
+pipeline {
+	environment {
+		STAGING_DIR = "${ sh(returnStdout: true, script: '[ -z ${STAGING_DIR} ] && echo "/missing" || echo "${STAGING_DIR}"') }"
+	}
+	agent {
+		dockerfile {
+			filename 'misc/dockers/hub_platform_firmware/Dockerfile'
+			args '--userns=host -v "/etc/group:/etc/group:ro" -v "/etc/passwd:/etc/passwd:ro" -v "/etc/shadow:/etc/shadow:ro" -v /var/lib/jenkins/.ssh:/var/jenkins_home/ssh -v /usr/local/toolchains:/usr/local/toolchains'
+			label('fast || kubeslave')
+		}
+	}
+
+	options {
+		buildDiscarder(logRotator(artifactDaysToKeepStr: '5', artifactNumToKeepStr: '5', daysToKeepStr: '5', numToKeepStr: '5'))
+		disableConcurrentBuilds()
+		timestamps()
+		retry(1)
+	}
+
+	stages {
+		stage('Prepare Environment') {
+			steps {
+				script {
+					sh 'mkdir -p ~/.ssh'
+					sh 'cp -R /var/jenkins_home/ssh/* ~/.ssh'
+					sshagent(['faf26e3e-38ee-4f0c-bf72-9038200e2465']) {
+						sh 'git submodule update --init --recursive'
+					}
+					sh 'mkdir /tmp/cores'
+					sh 'sysctl kernel.core_pattern'
+					sh 'ulimit -a'
+					try {
+						sh 'grep -q INCLUDE_h2_1_h2_secure_1=\\"no\\" included_hubs'
+						}
+					catch(err) {
+						INCLUDE_h2_1_h2_secure_1 = true
+						echo 'Did not found INCLUDE_h2_1_h2_secure_1=\"no\" in included_hubs, will consider h2.1 and h2_secure.1 hub types'
+					}
+					try {
+						sh 'grep -q INCLUDE_g150=\\"no\\" included_hubs'
+						}
+					catch(err) {
+						INCLUDE_g150 = true
+						echo 'Did not found INCLUDE_g150=\"no\" in included_hubs, will consider g150 hub type'
+					}
+					try {
+						sh 'grep -q INCLUDE_beewave_1=\\"no\\" included_hubs'
+						}
+					catch(err) {
+						INCLUDE_beewave_1 = true
+						echo 'Did not found INCLUDE_beewave_1=\"no\" in included_hubs, will consider beewave.1 hub type'
+					}
+				}
+			}
+		}
+
+		stage('Jira Checks') {
+			steps{
+				script {
+					lastSuccessfulBuild(passed_builds, currentBuild)
+					result_changelog = processChangeLog(included_jira_ids, passed_builds)
+					for (j = 0; j <included_jira_ids.size(); j++) {
+						jiraId = included_jira_ids[j]
+						//jira_parent[j] = ""
+						type_found = false
+						try {
+							def jira_issue = jiraGetIssue site: 'JIRA_MIOS', idOrKey: jiraId
+							def jira_status = jira_issue.data.fields.status.name.toString()
+							def jira_type = jira_issue.data.fields.issuetype.name.toString()
+							def currentBuildVersion = jira_issue.data.fields.customfield_12102.toString()
+							build_versions[j] = currentBuildVersion
+							for (x in jira_types) {
+								def current_type = x // Need to bind the label variable before the closure - can't do 'for (current_type in jira_types)'
+								if (jira_type == current_type) {
+									type_found = true
+									jira_transition[j] = ready_for_qa_transitions[current_type]
+									if ( ( current_branch.equals('master') || current_branch.matches("${branch_pattern}") ) && jira_status != jira_statuses[current_type]) {
+										status_warning += "\n * ${jiraId}:${jira_type}: - Actual: ${jira_status}  - Expected at PR time: ${jira_statuses[current_type]}"
+										jira_transition[j] = "BAD_STATUS"
+									}
+								}
+								//if (jira_type == 'Sub-task') {
+									//jira_parent[j] = jira_issue.data.fields.parent.id.toString()
+								//}
+							}
+							if (!type_found && jira_id_enforcement) {
+								exit_error = "\n Un-handled Jira Issue Type: - ${jira_type}. You are not supposed to commit with it!"
+								error ()
+							}
+						}
+						catch(err) {
+							if (jira_id_enforcement) {
+								exit_error = "\n Un-handled error: " + err.getMessage() + "\nYou are not supposed to commit with it!"
+								error ()
+							}
+							else {
+								echo err.getMessage()
+								echo "Error detected, but we will continue."
+							}
+						}
+					}
+				}
+			}
+		}
+
+		stage('CodeStyle Check') {
+			when {
+				not { branch '*@wrt_build' }
+			}
+			steps{
+				sh ". /etc/profile && ./misc/scripts/code_style.py -j${parallel_build} --all --action=check 2>&1"
+				dir( 'deps/ZNet' ) {
+					sh '. /etc/profile && git describe --match \'release/*\' --exact-match 2>&1'
+				}
+			}
+		}
+
+		stage('Building AMD64 platform') {
+			when {
+				not { branch '*@wrt_build' }
+			}
+			steps{
+				dir( "build/amd64_release" ) {
+					sh ". /etc/profile && cmake -DCMAKE_TOOLCHAIN_FILE=misc/cmake/amd64.toolchain.cmake -DHUB_CMAKE_COLORED_OUTPUT=OFF -DHUB_FIRMWARE_COLORED_OUTPUT=OFF -DWITH_TESTS=ON -DHUB_WITH_SPEAKER=ON -DPARALLEL_COUNT=${parallel_build} ../.. 2>&1"
+				}
+				dir( "build/amd64_release" ) {
+					sh ". /etc/profile && make ffmpeg_proj iproute2 -j${parallel_build} 2>&1"
+				}
+				dir( "build/amd64_release" ) {
+					sh ". /etc/profile && STAGING_DIR=${env.STAGING_DIR} make -j${parallel_build} 2>&1"
+				}
+			}
+		}
+
+		stage('Running tests') {
+			when {
+				not { branch '*@wrt_build' }
+			}
+			steps{
+				timeout(35) {
+					dir( "build/amd64_release" ) {
+						sh ". /etc/profile && ctest -j${parallel_build} -T test --output-on-failure --no-compress-output -O tests_poligon/ctest-run.log --timeout 900 2>&1"
+					}
+				}
+			}
+			post {
+				always {
+					dir( "build/amd64_release" ) {
+						sh 'cp -R /tmp/cores .'
+					}
+					archiveArtifacts (
+						artifacts: 'build/amd64_release/Testing/**/*.xml, build/amd64_release/tests_poligon/**/*.*, build/amd64_release/tests_poligon/*.log, build/amd64_release/addons/**/*, build/amd64_release/bin/*, build/amd64_release/tests/*, build/amd64_release/lib/**/*.so, build/amd64_release/cores/*', allowEmptyArchive: true, fingerprint: true, onlyIfSuccessful: false
+					)
+
+					xunit (
+						testTimeMargin: '3000',
+						thresholdMode: 1,
+						thresholds: [
+							skipped(failureThreshold: '0'),
+							failed(failureThreshold: '0')
+						],
+						tools: [
+							CTest(
+								pattern: 'build/amd64_release/Testing/**/*.xml',
+								deleteOutputFiles: false,
+								failIfNotNew: false,
+								skipNoTestFiles: true,
+								stopProcessingIfError: true
+							)]
+					)
+				}
+			}
+		}
+
+		stage('Building firmware for a H2 platform') {
+			when {
+				expression { "${INCLUDE_h2_1_h2_secure_1}" == "true" }
+			}
+			steps{
+				dir( "build/arm-musl-7.4.0_minsizerel/h2.1" ) {
+					sh ". /etc/profile && cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_TOOLCHAIN_FILE=misc/cmake/arm-openwrt.toolchain.cmake -DHUB_FIRMWARE_COLORED_OUTPUT=OFF -DHUB_TYPE=h2.1 -DFIRMWARE_BUILD_NUMBER=${release_version} -DHUB_CMAKE_COLORED_OUTPUT=OFF -DWITH_TESTS=OFF  -DHUB_FIRMWARE_LOGS_LEVEL=${log_level} -DPARALLEL_COUNT=${parallel_build} ../../.. 2>&1"
+					sh ". /etc/profile && STAGING_DIR=${env.STAGING_DIR} make -j${parallel_build} 2>&1"
+				}
+			}
+		}
+
+		stage('Building firmware for a H2 Secure platform') {
+			when {
+				expression { "${INCLUDE_h2_1_h2_secure_1}" == "true" }
+			}
+			steps{
+				dir( "build/arm-musl-7.4.0_minsizerel/h2_secure.1" ) {
+					sh ". /etc/profile && cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_TOOLCHAIN_FILE=misc/cmake/arm-openwrt.toolchain.cmake -DHUB_FIRMWARE_COLORED_OUTPUT=OFF -DHUB_TYPE=h2_secure.1 -DFIRMWARE_BUILD_NUMBER=${release_version} -DHUB_CMAKE_COLORED_OUTPUT=OFF -DWITH_TESTS=OFF  -DHUB_FIRMWARE_LOGS_LEVEL=${log_level} -DPARALLEL_COUNT=${parallel_build}  ../../.. 2>&1"
+					sh ". /etc/profile && STAGING_DIR=${env.STAGING_DIR} make -j${parallel_build} 2>&1"
+				}
+			}
+		}
+
+		stage('Building firmware for a BeeWave platform') {
+			when {
+				expression { "${INCLUDE_beewave_1}" == "true" }
+			}
+			steps{
+				dir( "build/mips-musl-7.4.0_minsizerel/beewave.1" ) {
+					sh ". /etc/profile && cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_TOOLCHAIN_FILE=misc/cmake/mips-musl.toolchain.cmake -DHUB_FIRMWARE_COLORED_OUTPUT=OFF -DHUB_TYPE=beewave.1 -DFIRMWARE_BUILD_NUMBER=${release_version} -DHUB_CMAKE_COLORED_OUTPUT=OFF -DWITH_TESTS=OFF  -DHUB_FIRMWARE_LOGS_LEVEL=${log_level} -DPARALLEL_COUNT=${parallel_build} ../../.. 2>&1"
+					sh ". /etc/profile && STAGING_DIR=${env.STAGING_DIR} make -j${parallel_build} 2>&1"
+				}
+			}
+		}
+
+		stage('Building firmware for a G150 platform') {
+			when {
+				expression { "${INCLUDE_g150}" == "true" }
+			}
+			steps{
+				dir( "build/mips-uclibc-4.8-linaro_minsizerel/g150" ) {
+					sh ". /etc/profile && cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_TOOLCHAIN_FILE=misc/cmake/mips.toolchain.cmake -DHUB_FIRMWARE_COLORED_OUTPUT=OFF -DHUB_TYPE=g150 -DFIRMWARE_BUILD_NUMBER=${release_version} -DHUB_COLORED_OUTPUT=OFF -DWITH_TESTS=OFF -DHUB_FIRMWARE_LOGS_LEVEL=${log_level} -DPARALLEL_COUNT=${parallel_build} ../../.. 2>&1"
+					sh ". /etc/profile && STAGING_DIR=${env.STAGING_DIR} make -j${parallel_build} 2>&1"
+				}
+			}
+		}
+
+		stage('Checking opkg makefiles') {
+			steps{
+				dir( "misc/scripts/" ) {
+					sh '. /etc/profile && ./opkg_mks.sh --no-build check 2>&1'
+				}
+			}
+		}
+
+		stage('Building firmware packages') {
+			steps{
+				dir( "misc/scripts/" ) {
+					sh ". /etc/profile && ./opkg_mks.sh --no-build --no-install --pkg-version-build ${release_version} pack 2>&1"
+				}
+			}
+		}
+
+		stage('Deploy firmware packages') {
+			when {
+				anyOf {
+					branch 'master';
+					branch '*@wrt_build';
+					expression {current_branch.matches("${branch_pattern}")}
+					}
+			}
+			steps{
+				script {
+					withCredentials([file(credentialsId: 'ez_bundle', variable: 'SFTP_KEY_FILE')]) {
+						if ( "${INCLUDE_h2_1_h2_secure_1}" == "true" ) {
+							sh ". /etc/profile && ./misc/scripts/deploy_snapshot.py " +
+								"--identity_file ${SFTP_KEY_FILE} " +
+								"--deploy_path ${deploy_h2_firmware_path} " +
+								"--source build/arm-musl-7.4.0_minsizerel/h2.1/packages 2>&1"
+							sh ". /etc/profile && ./misc/scripts/deploy_snapshot.py " +
+								"--identity_file ${SFTP_KEY_FILE} " +
+								"--deploy_path ${deploy_h2_secure_firmware_path} " +
+								"--source build/arm-musl-7.4.0_minsizerel/h2_secure.1/packages 2>&1"
+						}
+						if ( "${INCLUDE_beewave_1}" == "true" ) {
+							sh ". /etc/profile && ./misc/scripts/deploy_snapshot.py " +
+								"--identity_file ${SFTP_KEY_FILE} " +
+								"--deploy_path ${deploy_beewave_firmware_path} " +
+								"--source build/mips-musl-7.4.0_minsizerel/beewave.1/packages 2>&1"
+						}
+						if ( "${INCLUDE_g150}" == "true" ) {
+							sh ". /etc/profile && ./misc/scripts/deploy_snapshot.py " +
+								"--identity_file ${SFTP_KEY_FILE} " +
+								"--deploy_path ${deploy_g150_firmware_path} " +
+								"--source build/mips-uclibc-4.8-linaro_minsizerel/g150/packages 2>&1"
+						}
+					}
+				}
+			}
+		}
+
+		stage('Jira Updates') {
+			when {
+				anyOf {
+					branch 'master';
+					expression {current_branch.matches("${branch_pattern}")}
+				}
+			}
+			steps{
+				script {
+					try {
+						def current_build_msg = "HubPlatform-${tag_version}"
+						def comment = [ body: "${current_build_msg}" ]
+						for (j = 0; j <included_jira_ids.size(); j++) {
+							def new_val = current_build_msg
+							if (build_versions[j] != "" && build_versions[j] != "null") {
+								new_val = "${build_versions[j]}; ${new_val}"
+							}
+							def build_version = [fields: [customfield_12102: "${new_val}"]]
+							jiraAddComment site: 'JIRA_MIOS', idOrKey: included_jira_ids[j], input: comment
+							jiraEditIssue site: 'JIRA_MIOS', idOrKey: included_jira_ids[j], issue: build_version
+						}
+					}
+					catch(err) {
+						echo err.getMessage()
+						echo "Error detected, but we will continue."
+					}
+				}
+			}
+		}
+	}
+
+	post {
+		always {
+			tag2MainBranches tag_version
+			notifications2MainBranches currentBuild.result
+		}
+		cleanup {
+			echo 'Clearing out'
+			sh "chmod -R 777 ."
+			deleteDir()
+		}
+	}
+}
+
+def lastSuccessfulBuild(passed_builds, build) {
+	if (build != null && build.result != 'SUCCESS') {
+		passed_builds.add(build)
+		lastSuccessfulBuild(passed_builds, build.getPreviousBuild())
+		print ' checking prev build for success '
+	}
+}
+
+@NonCPS
+String processChangeLog(included_jira_ids, included_builds) {
+	log = default_changelog
+	for (int x = 0; x < included_builds.size(); x++) {
+		def current_build = included_builds[x];
+		def changelog_sets = current_build.rawBuild.changeSets
+		for (int i = 0; i < changelog_sets.size(); i++) {
+			def entries = changelog_sets[i].items
+			for (int j = 0; j < entries.length; j++) {
+				def entry = entries[j]
+				log += "\n * ${entry.msg} by @${entry.author}"
+				String msg = entry.msg
+				def id_found = false
+				msg.findAll(issue_pattern).each {jira_id ->
+					if ( 0 == included_jira_ids.count{it == jira_id} ) {
+						included_jira_ids.push(jira_id)
+					}
+					id_found = true
+				}
+				if ( !id_found ) {
+					if ( jira_id_enforcement ) {
+						exit_error = "\n Aborting build since changelog contains commits without jira Id in message. issue_pattern: ${issue_pattern} CommitHash:${entry.commitId}  CommitMessage: ${entry.msg}"
+						print " ${exit_error} "
+						error ()
+					} else {
+						jira_id_warning += "\n * `${entry.commitId}` - ${entry.msg}"
+					}
+				}
+			}
+		}
+	}
+	return log;
+}

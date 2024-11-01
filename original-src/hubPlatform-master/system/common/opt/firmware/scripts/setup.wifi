@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import os
+f = os.popen('/opt/firmware/scripts/wf-cmd.sh list')
+iwlist = f.read()
+networks = "["
+for line in iwlist.split('\n'):
+    if line!='':
+        networks=networks+line+',\n'
+
+networks=networks+']'
+jscript='<script>\nvar networks='+networks+';\nnetworks.forEach(function(entry){\ndocument.getElementById("networklist").innerHTML+="<form method=get action=save.password>"+entry["ssid"]+" <input type=hidden name=ssid value=\'"+entry["ssid"]+"\'><input type=text name=password> <input type=submit value=\'Save password\'></form><br>";\n});\n</script>';
+print 'Content-type: text/html\n\n<html><head><title>Wi-Fi cConfiguration</title></head><body><div id=networklist></div>',jscript,'</body></html>'

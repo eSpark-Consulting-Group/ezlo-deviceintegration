@@ -1,0 +1,80 @@
+#!/bin/sh
+
+if [ "$#" -ne 2 ]; then
+    echo "Usage: ./shrink_folder <fullPathToFolder> <sizeInMegabytes>"
+    echo "Example: ./shrink_folder /home/cores 80"
+    echo "In this example files in folder /home/cores will be deleted so that after deletion"
+    echo "size of files in the folder will be less or equal 80MB. Files with old modification date are deleted first"
+    echo "NOTE! To work correctly folder must not contain nested non-empty folders! Because files in nested folders are not managed, only in specified folder!"
+    exit 2
+fi
+
+folder="$1"
+
+# Returns sum of sizes of files in the folder
+function getFilesTotalSize()
+{
+    fileSizesSum=0
+    listOfSizes=$( ls -lp $folder | grep -v / | awk '{print $5}' | tr '\n' ' ' )
+    oldIFS=$IFS
+    IFS=' '
+    for fileSize in $listOfSizes
+    do
+	if [ "$fileSize" != "" ]; then
+	     fileSizesSum=$( expr $fileSizesSum + $fileSize )
+	fi
+    done
+    IFS=$oldIFS
+    echo $fileSizesSum
+}
+
+cd $folder
+megabyte=1048576 #bytes
+kilobyte=1024 #bytes
+# Note that there should be no nested folders in 'folder'
+size=$( getFilesTotalSize )
+echo "Size of files in folder '$folder': $(( $size / $megabyte )) MB ($size bytes)"
+
+sizeInMegabytes=$(( $size / $megabyte ))
+if [ $sizeInMegabytes == $2 ]; then
+    echo "Current size of files in folder is the same as the size specified. Do nothing"
+    exit 0
+fi
+
+limit=$(( $2 * $megabyte ))
+if [ $size -gt $limit ]; then
+    difference=$(( size-limit ))
+    echo "Will delete at least: $(( $difference / $megabyte )) MB"
+    # Oldest files are listed first
+    filenames=$( ls -1ptr . | grep -v / )
+    deletedFileSizesSum=0
+    numOfDeletedFiles=0
+
+    oldIFS=$IFS
+    IFS=$(echo -en "\n\b")
+    for fileName in $filenames
+    do
+    if [ "$fileName" == "" ]; then
+        break
+    fi
+
+    fileSize=$(( $(du -k $fileName | awk '{print $1}') * $kilobyte ))
+    deletedFileSizesSum=$(( $deletedFileSizesSum+$fileSize ))
+    numOfDeletedFiles=$(( $numOfDeletedFiles+1 ))
+    echo "Deleting $fileName: $(( $fileSize / $megabyte )) MB ($fileSize bytes)"
+
+    rm "$fileName"
+    if [ $deletedFileSizesSum -ge $difference ]; then
+        break
+    fi
+
+    done
+    IFS=$oldIFS
+
+    echo "Finished deleting of files, Deleted $numOfDeletedFiles files. Total deleted files size: $(( $deletedFileSizesSum / $megabyte )) MB ($deletedFileSizesSum bytes)"
+    size=$( getFilesTotalSize )
+    echo "Current size of files in folder is: $(expr $size / $megabyte)MB ($size bytes)"
+
+else
+    echo "Given size is greater then folder size. Do nothing."
+fi

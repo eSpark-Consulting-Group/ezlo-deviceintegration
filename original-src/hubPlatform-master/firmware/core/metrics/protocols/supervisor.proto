@@ -1,0 +1,322 @@
+syntax = "proto3";
+
+option go_package = "./metrics";
+
+message Report {
+  int32 version = 1;
+
+  HubInfo hub_info = 2;
+  System system = 3;
+  Time time = 4;
+  Network network = 5;
+  Processes processes = 6;
+  UiService ui_service = 7;
+  Metrics metrics = 8;
+  Zwave zwave = 9;
+}
+
+message MemInfo {
+  uint64 vm_size = 1;
+  uint64 vm_rss = 2;
+  uint64 rss_anon = 3;
+  uint64 vm_peak = 4;
+  uint64 vm_lck = 6;
+  uint64 vm_pin = 7;
+  uint64 vm_hwm = 8;
+  uint64 rss_file = 11;
+  uint64 rss_shmem = 12;
+  uint64 vm_data = 13;
+  uint64 vm_stk = 14;
+  uint64 vm_exe = 15;
+  uint64 vm_lib = 16;
+  uint64 vm_pte = 17;
+  uint64 vm_swap = 18;
+}
+
+message HubInfo {
+  enum NMAStatus {
+    NMA_STATUS_UNKNOWN = 0;
+    NMA_STATUS_CONNECTED = 1;
+    NMA_STATUS_DISCONNECTED = 2;
+  }
+
+  message HubError {
+    string error_id = 1;
+    uint32 count = 2;
+    uint32 last_updated = 3;
+  }
+
+  NMAStatus nma_status = 1;
+  uint64 serial = 2;
+  string model = 3;
+  string hardware_revision = 4;
+  string firmware_version = 5;
+  bool nma_connection = 6;
+  string zwave_calibration = 7;
+  string controller_uuid = 8;
+  string cloud_coordinator_url = 9;
+  string explicit_cloud_coordinator_url = 10;
+  string nma_server_url = 11;
+  string explicit_nma_server_url = 12;
+  bool bus_connection_status = 13;
+  bool hub_registration_status = 14;
+  bool hub_connecting_status = 15;
+  bool internet_availability = 16;
+  string ui_network_configuration = 17;
+  string active_interface = 18;
+  bool wifi_availability = 19;
+  bool non_mobile_internet_availability = 20;
+  string active_wifi_device = 21;
+  // TODO ?? last firmware update time
+  repeated HubError hub_errors = 22;
+}
+
+message System {
+  message LoadAverage {
+    float load_1 = 1;
+    float load_5 = 2;
+    float load_15 = 3;
+  }
+
+  message Memory {
+    int64 total = 1;
+    int64 free = 2;
+    int64 available = 3;
+    int64 cached = 4;
+  }
+
+  message Filesystem {
+    string id = 1;
+    uint64 total_space = 2;
+    uint64 available_space = 3;
+    repeated string errors = 4;
+  }
+
+  uint64 uptime = 1; // in seconds
+  LoadAverage load_average = 2;
+  Memory memory = 3;
+  repeated Filesystem filesystems = 4;
+  uint32 reboot_count = 5;
+  uint32 oom_kill_count = 6;
+  float cpu_temperature = 7; // in kelvins
+}
+
+message Time {
+  uint64 utc_time = 1; // in seconds
+  int32 timezone = 2;
+  string timezone_identifier = 3;
+  uint64 ntp_last_sync = 4;
+  string timezone_offset = 5;
+}
+
+message Network {
+  repeated NetworkInterface interfaces = 1;
+  repeated ModemData modems = 2;
+  uint64 dns_error_count = 3;
+  repeated SshTunnel ssh_tunnels = 4;
+}
+
+message NetworkInterface {
+  enum Type {
+    TYPE_UNKNOWN = 0;
+    TYPE_ETHERNET = 1;
+    TYPE_WIFI = 2;
+    TYPE_MOBILE = 3;
+  }
+
+  enum Status {
+    STATUS_UNKNOWN = 0;
+    STATUS_CONNECTED = 1;
+    STATUS_DISCONNECTED = 2;
+    STATUS_DISABLED = 3;
+  }
+
+  message Packets {
+    uint64 count = 1;
+    uint64 bytes = 2;
+    uint64 errors = 3;
+  }
+
+  string name = 1;
+  Type type = 2;
+  Status status = 3;
+  Packets rx_packets = 4;
+  Packets tx_packets = 5;
+  uint64 uptime = 6;
+  PingStatistics ping_statistics = 7;
+}
+
+message PingStatistics {
+  message GenericStats {
+    uint64 hits = 1;
+    uint64 fails = 2;
+    uint64 sequential_fails = 3;
+
+    uint64 packets_sent = 4;
+    uint64 packets_received = 5;
+    uint64 packets_lost = 6;
+  }
+
+  message HostStats {
+    enum HostLocation {
+      HOST_LOCATION_EXTERNAL = 0;
+      HOST_LOCATION_LOCAL = 1;
+    }
+
+    string host_url = 1;
+    HostLocation host_location = 2;
+
+    uint64 hits = 3;
+    uint64 fails = 4;
+
+    uint64 packets_sent = 5;
+    uint64 packets_received = 6;
+    uint64 packets_lost = 7;
+
+    uint32 round_trip_min = 8;
+    uint32 round_trip_avg = 9;
+    uint32 round_trip_max = 10;
+
+    uint32 timestamp_min = 11;
+    uint32 timestamp_max = 12;
+
+    string host_description = 13;
+  }
+
+  GenericStats external_stats = 1;
+  GenericStats local_stats = 2;
+  repeated HostStats hosts = 3;
+}
+
+message ModemData {
+  string interface = 1;
+  string signal_quality = 2;
+  string band_frequency = 3;
+}
+
+message SshTunnel {
+  enum SshTunnelType {
+    TYPE_UNKNOWN = 0;
+    TYPE_HTTP_SERVER = 1;
+    TYPE_SUPPORT = 2;
+    TYPE_CAMERA = 3;
+  }
+
+  enum SshTunnelStatus {
+    STATUS_UNKNOWN = 0;
+    STATUS_OPEN = 1;
+    STATUS_BROKEN = 2;
+    STATUS_CLOSED = 3;
+  }
+
+  enum SshTunnelConnectionStatus {
+    CONNECTION_STATUS_UNKNOWN = 0;
+    CONNECTION_STATUS_CONNECTED = 1;
+    CONNECTION_STATUS_REFUSED = 2;
+  }
+
+  message SshTunnelStatisticsEntry {
+    SshTunnelConnectionStatus status = 1;
+    uint32 count = 2;
+  }
+
+  int32 pid = 1;
+  string id = 2;
+  SshTunnelType ssh_tunnel_type = 3;
+  SshTunnelStatus ssh_tunnel_status = 4;
+  string tcp_state = 5;
+  string server_url = 6;
+  int32 server_port = 7;
+  int32 remote_port = 8;
+  int32 local_port = 9;
+  uint32 start_time = 10; // seconds since unix epoch
+  uint32 uptime = 11; // seconds
+  // NOTE: protobuf 3 does not allow 'enum' type as a key type in maps
+  repeated SshTunnelStatisticsEntry connection_statistics = 12;
+}
+
+message Processes {
+  message Process {
+    enum Status {
+      STATUS_UNKNOWN = 0;
+      STATUS_RUNNING = 1;
+      STATUS_CRASHED = 2;
+      STATUS_STOPPED = 3;
+    }
+
+    string name = 1;
+    Status status = 2;
+    uint64 restarts = 3;
+    uint64 cpu_time = 4;
+    string finished = 5; // time in seconds since boot when process exited
+    MemInfo memory = 6;
+    uint64 uptime = 7;
+    uint64 open_file_descriptors = 8;
+    uint64 report_date = 9;
+  }
+  repeated Process processes = 1;
+}
+
+message UiService {
+  message HttpServer {
+    uint64 received = 1;
+    uint64 success = 2;
+    uint64 errors = 3;
+    uint64 wrong_auth = 4;
+    uint64 timed_out = 5;
+    uint64 limit_reached = 6;
+    uint64 rx_bytes = 7;
+    uint64 tx_bytes = 8;
+    uint64 unhandled = 9;
+    uint32 parallel_requests = 10;
+  }
+  message NMA {
+    uint64 nma_connection_uptime = 1;
+    uint64 nma_connection_cumulative_uptime = 2;
+    uint64 nma_reconnects = 3;
+    uint64 nma_reconnects_cumulative = 4;
+  }
+
+  HttpServer http_server = 1;
+  NMA nma = 2;
+}
+
+message Metrics {
+  enum ReportType {
+    TYPE_UNKNOWN = 0;
+    TYPE_FULL = 1;
+    TYPE_REDUCED = 2;
+  }
+
+  message TransferStat {
+    uint32 packets = 1;
+    uint64 sent_size = 2;
+    uint64 sent_at = 3;
+    // reserved for future packets stats
+
+    uint32 errors = 10;
+    uint64 error_at = 11;
+
+    // reserved for future error fields
+    uint32 bus_requests = 20;
+    uint32 bus_errors = 21;
+  }
+
+  uint32 sequence = 1;
+  ReportType report_type = 2;
+  TransferStat transfer_stat = 3;
+}
+
+message Zwave {
+    message ZwaveNodeCommandDelay {
+        uint32 node_id = 1;
+        uint32 send_time = 2; // seconds since unix epoch
+        uint32 delay = 3; // time in milliseconds between connad sent and ACK received back
+    }
+    message ZwaveNodeCommandFail {
+        uint32 node_id = 1;
+        uint32 send_time = 2; // seconds since unix epoch
+    }
+    repeated ZwaveNodeCommandDelay node_command_delays = 1;
+    repeated ZwaveNodeCommandFail node_command_fails = 2;
+}

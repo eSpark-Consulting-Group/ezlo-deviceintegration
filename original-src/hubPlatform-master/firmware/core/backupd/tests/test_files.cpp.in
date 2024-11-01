@@ -1,0 +1,5 @@
+namespace HubPlatform {
+
+extern const char* PathVeraBackupFile = "@TEST_FILES_PATH@/vera_backup.tgz";
+
+}  // namespace HubPlatform

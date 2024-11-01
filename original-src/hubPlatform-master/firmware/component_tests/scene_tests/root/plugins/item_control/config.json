@@ -1,0 +1,41 @@
+{
+  "id": "item_control",
+  "version": "1.1",
+  "type": "gateway",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+      "core",
+      "scenes"
+  ],
+
+  "startup": "scripts/startup",
+  "teardown": "scripts/teardown",
+
+  "gateway": {
+    "name": "item_control",
+    "unreachableReasons": [ {
+      "reason": "No Reason",
+      "advice": "No Advice"
+    } ],
+    "unreachableActions": [ {
+      "label": "No Label",
+      "method": "start_exclude"
+    } ],
+    "label": "Item Control",
+    "reason": "No Reason",
+    "setItemValueCommand": "HUB:item_control/scripts/set_item_value",
+    "addItemDictionaryValueCommand": "HUB:item_control/scripts/set_item_dictionary_value",
+    "setItemDictionaryValueCommand": "HUB:item_control/scripts/set_item_dictionary_value",
+    "removeItemDictionaryValueCommand": "HUB:item_control/scripts/remove_item_dictionary_value",
+    "forceRemoveDeviceCommand": "HUB:zwave/scripts/start_exclude"
+  }
+}
+

@@ -1,0 +1,13 @@
+#include "2gig/version/2gig_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace TwoGig {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_2GIG_VERSION@" );
+}
+
+}  // namespace TwoGig
+}  // namespace Addons
+}  // namespace HubPlatform

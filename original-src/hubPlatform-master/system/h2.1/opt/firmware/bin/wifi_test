@@ -1,0 +1,290 @@
+#!/bin/sh
+
+if ! wl ver > /dev/null 2>&1; then
+  ifconfig wlan0 up
+  usleep 1000000
+  if ! wl ver > /dev/null 2>&1; then
+    usleep 100000
+    echo "# Driver did not start properly, please reboot controller with:"
+    echo "reboot -f"
+    exit 2
+  fi
+fi
+
+set -e
+
+
+if [ $# -lt 1 ]; then
+  echo "NAME"
+  echo "    wifi_test"
+  echo ""
+  echo "SYNOPSIS"
+  echo "    wifi_test [--mode mode] [--channel channel] [--bandwidth bandwidth] [--rate rate] [--power power]"
+  echo "    wifi_test [-m mode] [-c channel] [-b bandwidth] [-r rate] [-p power]"
+  echo "    wifi_test --stop"
+  echo "    wifi_test -s"
+  echo ""
+  echo "DESCRIPTION"
+  echo "    Utility to control parameters of Wi-Fi module"
+  echo ""
+  echo "OPTIONS"
+  echo "    -m, --mode mode"
+  echo "        Set Wi-Fi mode"
+  echo "        Default: b"
+  echo "        Possible values: b g a n ac"
+  echo "        Example: --mode g"
+  echo ""
+  echo "    -c, --channel channel"
+  echo "        Set radio channel"
+  echo "        Default: 11"
+  echo "        Example: --channel 8"
+  echo ""
+  echo "    -b, --bandwidth bandwidth"
+  echo "        Set bandwidth"
+  echo "        Default: 20"
+  echo "        Possible values: 20 40 80"
+  echo "        Example: --bandwidth 20"
+  echo ""
+  echo "    -h, --ht index"
+  echo "        Set HT MCS index"
+  echo "        Default: 0"
+  echo "        Possible values: [0-23]"
+  echo "        Example: --ht 3"
+  echo ""
+  echo "    -v, --vht index"
+  echo "        Set VHT MCS index"
+  echo "        Default: 0"
+  echo "        Possible values: [0-9]"
+  echo "        Example: --vht 3"
+  echo ""
+  echo "    -S, --sideband sideband"
+  echo "        Set primary sideband for 40MHz"
+  echo "        Default: -1=lower"
+  echo "        Possible values: -1=lower, 0=none, 1=upper"
+  echo "        Example: --sideband 1"
+  echo ""
+  echo "    -r, --rate rate"
+  echo "        Set rate in mbps"
+  echo "        Rate is auto defined by driver if arg is not present"
+  echo "        Possible values: 1 2 5.5 6 9 11 12 18 24 36 48 54"
+  echo "        Example: --rate 1"
+  echo ""
+  echo "    -C, --country country"
+  echo "        Set Country Code for driver operational region"
+  echo "        Default: ALL (no regulations enabled)"
+  echo "        To list possible values run following command: \"wl country list\""
+  echo "        Example: --country US"
+  echo "              or --country \"UNITED STATES\""
+  echo ""
+  echo ""
+  echo "    -p, --power power"
+  echo "        Set tx power in dbm"
+  echo "        Power is auto defined by driver if arg is not present"
+  echo "        Max power limit defined by the driver"
+  echo "        Example: --power 15"
+  echo ""
+  echo "    -s, --stop"
+  echo "        Stop testing"
+
+  exit 1
+fi
+
+CHANNEL=11
+MODE=
+POWER=
+BANDWIDTH=20
+RATE=
+BAND=2
+HTINDEX=
+VHTINDEX=
+VHTNSS=
+SIDEBAND=
+COUNTRY=ALL
+
+while [ $# -gt 0 ]
+do
+  case $1 in
+  -m | --mode)
+    MODE="$2"
+    shift
+    ;;
+  -c | --channel)
+    CHANNEL="$2"
+    shift
+    ;;
+  -b | --bandwidth)
+    BANDWIDTH="$2"
+    shift
+    ;;
+  -h | --ht)
+    HTINDEX="$2"
+    shift
+    ;;
+  -v | --vht)
+    VHTINDEX="$2"
+    shift
+    ;;
+  -S | --sideband)
+    SIDEBAND="$2"
+    shift
+    ;;
+  -r | --rate)
+    RATE="$2"
+    shift
+    ;;
+  -C | --country)
+    COUNTRY="$2"
+    shift
+    ;;
+  -p | --power)
+    POWER="$2"
+    shift
+    ;;
+  -s | --stop)
+    STOP=1
+    ;;
+  *) # unknown option
+    echo "$1 is not a valid option"
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+ewl () {
+  echo "wl $*"
+  wl "$@"
+}
+
+ecwl () {
+  echo "wl $*"
+  if OUTPUT=$(wl "$@"); then
+    echo "# $OUTPUT"
+  else
+    echo "# $OUTPUT"
+    exit $?
+  fi
+}
+
+if [ -n "$STOP" ]; then
+  ewl down
+  echo ""
+  echo "# STOPPED"
+  exit 0;
+fi
+
+if [ "${CHANNEL}" -le 14 ]; then
+  BAND=2
+  MODEBAND=b
+  if [ -z "${MODE}" ]; then
+    MODE=b
+  fi
+else
+  BAND=5
+  MODEBAND=a
+  if [ -z "${MODE}" ]; then
+    MODE=a
+  fi
+fi
+
+if [ -z "${RATE}" ]; then
+  if [ "$MODE" = "b" ]; then
+    RATE=1
+  elif [ "$MODE" = "g" ]; then
+    RATE=6
+  elif [ "$MODE" = "a" ]; then
+    RATE=6
+  fi
+fi
+
+if [ "$MODE" = "b" ] || [ "$MODE" = "g" ] || [ "$MODE" = "a" ]; then
+  HTINDEX=
+  VHTINDEX=
+  VHTNSS=
+elif [ "$MODE" = "n" ]; then
+  if [ -z "${HTINDEX}" ]; then
+    HTINDEX=0
+  fi
+elif [ "$MODE" = "ac" ]; then
+  if [ -z "${VHTINDEX}" ]; then
+    VHTINDEX=0
+  fi
+  if [ -z "${VHTNSS}" ]; then
+    VHTNSS=1
+  fi
+fi
+
+if [ "$BANDWIDTH" -ne "40" ]; then
+  SIDEBAND=
+fi
+
+echo "# Mode      = ${MODE}"
+echo "# Channel   = ${CHANNEL}"
+echo "# Bandwidth = ${BANDWIDTH} MHz"
+echo "# Rate      = ${RATE:-default} Mbps"
+echo "# Power     = ${POWER:-default} dbm"
+echo "# Country   = ${COUNTRY}"
+echo "# HT index  = ${HTINDEX:-n/a}"
+echo "# VHT index = ${VHTINDEX:-n/a}"
+echo "# VHT NSS   = ${VHTNSS:-n/a}"
+# echo "# Band      = ${BAND}"
+echo ""
+
+ewl down
+ewl mpc 0
+ewl country ${COUNTRY}
+
+ewl band ${MODEBAND}
+
+ewl mimo_bw_cap 1
+ewl mimo_txbw -1
+ewl nrate -m 0
+ewl txchain 1
+ewl rxchain 1
+ewl up
+
+ewl ${BAND}g_rate ${RATE:+-r ${RATE}} ${HTINDEX:+-h ${HTINDEX}} ${VHTINDEX:+-v ${VHTINDEX}} ${VHTNSS:+-s ${VHTNSS}} -b "${BANDWIDTH}"
+
+# echo "wl chanspecs -b ${BAND} -w ${BANDWIDTH} | awk \"\\\$1~/^${CHANNEL}(u|l|\/80)?$/ {print \\\$1}\""
+# echo "wl chanspecs -b ${BAND} -w ${BANDWIDTH} | awk \"\\\$1~/^${CHANNEL}l$/ {print \\\$1}\""
+CHANSPEC=$(wl chanspecs -b "${BAND}" -w "${BANDWIDTH}" | awk "\$1~/^${CHANNEL}l$/ {print \$1; exit}")
+
+if [ -z "${CHANSPEC}" ]; then
+  # echo "wl chanspecs -b ${BAND} -w ${BANDWIDTH} | awk \"\\\$1~/^${CHANNEL}$/ {print \\\$1}\""
+  CHANSPEC=$(wl chanspecs -b "${BAND}" -w "${BANDWIDTH}" | awk "\$1~/^${CHANNEL}$/ {print \$1; exit}")
+fi
+
+if [ -z "${CHANSPEC}" ]; then
+  # echo "wl chanspecs -b ${BAND} -w ${BANDWIDTH} | awk \"\\\$1~/^${CHANNEL}u$/ {print \\\$1}\""
+  CHANSPEC=$(wl chanspecs -b "${BAND}" -w "${BANDWIDTH}" | awk "\$1~/^${CHANNEL}u$/ {print \$1; exit}")
+fi
+
+if [ -z "${CHANSPEC}" ]; then
+  # echo "wl chanspecs -b ${BAND} -w ${BANDWIDTH} | awk \"\\\$1~/^${CHANNEL}\/80$/ {print \\\$1}\""
+  CHANSPEC=$(wl chanspecs -b "${BAND}" -w "${BANDWIDTH}" | awk "\$1~/^${CHANNEL}\/80$/ {print \$1; exit}")
+fi
+
+if [ -n "${CHANSPEC}" ] && [ -z "${SIDEBAND}" ]; then
+  ecwl chanspec "${CHANSPEC}"
+else
+  if [ -z "${SIDEBAND}" ]; then
+    SIDEBAND=-1
+  fi
+  ecwl chanspec -c "${CHANNEL}" -b "${BAND}" -w "${BANDWIDTH}" -s "${SIDEBAND}"
+fi
+
+ewl phy_watchdog 0
+ewl scansuppress 1
+ewl phy_forcecal 1
+ewl phy_txpwrctrl 1
+
+if [ -z "${POWER}" ]; then
+  ewl txpwr1 -1
+else
+  ewl txpwr1 -o -d "${POWER}"
+fi
+
+ewl pkteng_start 00:90:4c:14:43:19 tx 30 1500 0
+
+echo ""
+echo "# STARTED"

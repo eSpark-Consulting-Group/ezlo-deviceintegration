@@ -1,0 +1,19 @@
+[Unit]
+Description=eZLO application service
+Wants=ezloStartup.service
+After=ezloStartup.service
+Before=syslog.target network.target
+Before=shutdown.target poweroff.target halt.target
+Before=reboot.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+WorkingDirectory=/opt/firmware/bin
+ExecStart=/opt/firmware/bin/start.sh
+ExecStop=/opt/firmware/bin/stop.sh
+ExecRestart=/opt/firmware/bin/restartd.sh
+StandardOutput=journal+console
+
+[Install]
+WantedBy=halt.target poweroff.target reboot.target

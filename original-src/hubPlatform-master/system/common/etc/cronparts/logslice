@@ -1,0 +1,14 @@
+#!/bin/sh
+
+TAG=firmware.logslice
+
+OPTIONS=rotate-on-size-limit
+test -f logger && logger -e $TAG "Log slicing: rotate on size limit or slice large files start logcmd $OPTIONS"
+
+/opt/firmware/bin/logcmd --rotate-on-size-limit --log-level=DEBUG 2>&1 | logger -s -p user.notice -t $TAG
+
+EXIT_STATUS=$?
+if [ $EXIT_STATUS -ne 0 ]; then
+    logger -s -t $TAG "Command chain failed with exit status $EXIT_STATUS, options: $OPTIONS"
+fi
+

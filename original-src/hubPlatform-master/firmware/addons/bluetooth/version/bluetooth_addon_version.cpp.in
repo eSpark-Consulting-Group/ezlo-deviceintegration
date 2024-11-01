@@ -1,0 +1,13 @@
+#include "bluetooth/version/bluetooth_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Bluetooth {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_BLUETOOTH_VERSION@" );
+}
+
+}  // namespace Bluetooth
+}  // namespace Addons
+}  // namespace HubPlatform

@@ -1,0 +1,43 @@
+cmake_minimum_required( VERSION 3.2 )
+include(ExternalProject)
+
+set(ZIPGATEWAY_PROJECT_EXT_PROJECT zipgateway-ext-project)
+set(ZIPGATEWAY_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+
+list(APPEND CMAKE_OPTS
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+    -DCMAKE_C_STANDARD=${CMAKE_C_STANDARD}
+    -DCMAKE_INSTALL_PREFIX=${ZIPGATEWAY_INSTALL_DIR}
+)
+
+list(APPEND ZIPGATEWAY_ARGS
+    -DJSON_C_INCLUDE_DIRS=${JSON_C_INCLUDE_DIRS}
+    -DJSON_C_LINK_DIRS=${FIRMWARE_LIBRARIES_DIR}
+    -DWITH_ZW_NVM_CONVERTER=${WITH_ZW_NVM_CONVERTER}
+)
+
+#Patch: diff -ruN a/ b/ > zipgateway-7.15.04.patch.diff
+
+ExternalProject_Add(
+    ${ZIPGATEWAY_PROJECT_EXT_PROJECT}
+    CMAKE_ARGS ${CMAKE_OPTS} ${ZIPGATEWAY_ARGS}
+    URL ${CMAKE_CURRENT_SOURCE_DIR}/zipgateway-7.15.04-Source.tar.bz2
+    PATCH_COMMAND bash -c "patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/zipgateway-7.15.04.patch.diff"
+    LOG_PATCH 1
+)
+
+ExternalProject_Add_Step(
+    ${ZIPGATEWAY_PROJECT_EXT_PROJECT} copy2bin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${ZIPGATEWAY_INSTALL_DIR}/bin ${CMAKE_BINARY_DIR}/bin && ${CMAKE_COMMAND} -E copy_directory ${ZIPGATEWAY_INSTALL_DIR}/lib ${CMAKE_BINARY_DIR}/lib
+    ALWAYS 1
+    DEPENDEES install
+)
+
+add_dependencies(${ZIPGATEWAY_PROJECT_EXT_PROJECT} json-c-ext-project)
+
+set( PACKAGE_NAME firmware-common-zipgateway)
+install( DIRECTORY ${ZIPGATEWAY_INSTALL_DIR}/lib DESTINATION ${PACKAGE_NAME}/opt/firmware )
+

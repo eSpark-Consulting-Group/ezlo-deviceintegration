@@ -1,0 +1,8 @@
+{
+  "id": "scene_blocks",
+  "version": "1.0",
+  "type": "extension",
+  "sceneBlocks": "templates/scene_blocks.json",
+  "permissions": [],
+  "dependencies": {}
+}

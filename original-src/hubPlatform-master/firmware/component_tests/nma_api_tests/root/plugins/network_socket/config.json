@@ -1,0 +1,31 @@
+{
+    "id": "network_socket",
+    "version": "1.0",
+    "type": "gateway",
+    "dependencies": {
+      "addons": [
+        {
+          "id": "lua",
+          "version": "1.0"
+        }
+      ]
+    },
+  
+    "permissions": [
+      "core",
+      "network",
+      "logging"
+    ],
+
+    "startup": "scripts/startup",
+    "teardown": "scripts/teardown",
+
+    "gateway": {
+      "name": "network_socket",
+      "label": "Network Socket",
+      "reason": "No Reason",
+      "setItemValueCommand": "HUB:network_socket/scripts/set_item_value"
+  }
+}
+
+  

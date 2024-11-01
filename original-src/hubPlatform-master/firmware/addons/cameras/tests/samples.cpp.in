@@ -1,0 +1,6 @@
+namespace HubPlatform {
+
+const char* PathVideo20secondsMp4 = "@VIDEO_SAMPLES_PATH@/video_20seconds.mp4";
+const char* MulawAudioTrack = "@VIDEO_SAMPLES_PATH@/mulaw_audio_track.mov";
+
+}

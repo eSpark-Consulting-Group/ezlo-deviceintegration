@@ -1,0 +1,13 @@
+#include "common_utils/firmware_package_version.h"
+
+namespace HubPlatform {
+namespace CommonUtils {
+namespace Firmware {
+
+std::string getVersion() {
+    return std::string( "@FIRMWARE_VERSION@" );
+}
+
+}  // namespace Firmware
+}  // namespace CommonUtils
+}  // namespace HubPlatform

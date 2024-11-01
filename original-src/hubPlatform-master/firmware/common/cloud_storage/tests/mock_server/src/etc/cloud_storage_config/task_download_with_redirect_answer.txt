@@ -1,0 +1,2 @@
+This is an answer for download with redirect, 
+payload data of a "downloaded" file.

@@ -1,0 +1,111 @@
+{
+    "settings": [
+        {
+            "name" : "scale.temperature",
+            "valueType" : "token",
+            "enum": ["celsius", "fahrenheit"],
+            "value": "fahrenheit"
+        },
+        {
+            "name" : "time.format",
+            "valueType" : "token",
+            "enum": ["12", "24"],
+            "value": "12"
+        },
+        {
+            "name" : "date.format",
+            "valueType" : "token",
+            "enum": ["mmddyy", "ddmmyy"],
+            "value": "mmddyy"
+        },
+        {
+            "name" : "logs.send_mode",
+            "valueType" : "token",
+            "enum": ["off", "each_rotation", "store_locally"],
+            "value": "each_rotation"
+        },
+        {
+            "name" : "logs.rotation.interval",
+            "valueType" : "int",
+            "value": @HUB_FIRMWARE_LOGS_ROTATION_INTERVAL@
+        },
+        {
+            "name" : "logs.rotation.size_limit",
+            "valueType" : "int",
+            "value": @HUB_FIRMWARE_LOGS_ROTATION_SIZE_LIMIT@
+        },
+        {
+            "name" : "logs.file.size_limit",
+            "valueType" : "int",
+            "value": @HUB_FIRMWARE_LOGS_FILE_SIZE_LIMIT@
+        },
+        {
+            "name" : "logs.pending.folder.size_limit",
+            "valueType" : "int",
+            "value": @HUB_FIRMWARE_LOGS_PENDING_FOLDER_SIZE_LIMIT@
+        },
+        {
+            "name" : "first_start",
+            "valueType" : "bool",
+            "value": true
+        },
+        {
+            "name" : "location_uuid",
+            "valueType" : "string",
+            "value": ""
+        },
+        {
+            "name" : "logs.level",
+            "valueType" : "token",
+            "enum": ["ERROR", "WARNING", "INFO", "DEBUG", "TRACE"],
+            "value": "@HUB_FIRMWARE_LOGS_LEVEL@"
+        },
+        {
+            "name" : "logs.color",
+            "valueType" : "bool",
+            "value": @HUB_FIRMWARE_LOGS_COLOR@
+        },
+        {
+            "name" : "logs.indent",
+            "valueType" : "token",
+            "enum": ["-1", "2", "4", "8"],
+            "value": "@HUB_FIRMWARE_LOGS_INDENT@"
+        },
+        {
+            "name" : "broadcasts.battery.period",
+            "valueType" : "int",
+            "value": 0
+        },
+        {
+            "name" : "broadcasts.modem_signal_quality.period",
+            "valueType" : "int",
+            "value": 0
+        },
+        {
+            "name" : "update.enable",
+            "valueType" : "bool",
+            "value": true
+        },
+        {
+            "name" : "webrtc.version",
+            "valueType" : "token",
+            "enum": ["1", "2", "auto"],
+            "value": "auto"
+        },
+        {
+            "name" : "network.ping_timeout",
+            "valueType" : "int",
+            "value": @HUB_FIRMWARE_NETWORK_PING_TIMEOUT@
+        },
+        {
+            "name" : "cameras.snapshot_cache_interval",
+            "valueType" : "int",
+            "value": 20
+        },
+        {
+            "name" : "tcds.file_size_limit",
+            "valueType" : "int",
+            "value": 100
+        }
+    ]
+}

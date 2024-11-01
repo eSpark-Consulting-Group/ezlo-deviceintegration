@@ -1,0 +1,13 @@
+#include "luad/version/luad_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Luad {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_LUAD_VERSION@" );
+}
+
+}  // namespace Luad
+}  // namespace Addons
+}  // namespace HubPlatform

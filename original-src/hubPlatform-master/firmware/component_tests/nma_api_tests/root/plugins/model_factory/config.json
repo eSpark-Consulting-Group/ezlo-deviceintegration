@@ -1,0 +1,42 @@
+{
+  "id": "model_factory",
+  "version": "1.0",
+  "type": "gateway",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+      "core",
+      "storage"
+  ],
+
+  "startup": "scripts/startup",
+  "teardown": "scripts/teardown",
+
+  "gateway": {
+    "name": "model_factory",
+    "unreachableReasons": [ {
+      "reason": "No Reason",
+      "advice": "No Advice"
+    } ],
+    "unreachableActions": [ {
+      "label": "No Label",
+      "method": "start_exclude"
+    } ],
+    "label": "Model Factory",
+    "reason": "No Reason",
+    "setItemValueCommand": "HUB:model_factory/scripts/set_item_value",
+    "addItemDictionaryValueCommand": "HUB:model_factory/scripts/set_item_dictionary_value",
+    "setItemDictionaryValueCommand": "HUB:model_factory/scripts/set_item_dictionary_value",
+    "removeItemDictionaryValueCommand": "HUB:model_factory/scripts/remove_item_dictionary_value",
+    "clearItemDictionaryCommand": "HUB:model_factory/scripts/clear_item_dictionary",
+    "forceRemoveDeviceCommand": "HUB:model_factory/scripts/start_exclude",
+    "checkDeviceCommand": "HUB:model_factory/scripts/check_device"
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "general": {
+        "configs_folder": "/opt/firmware/etc",
+        "plugin_storage_limit": 1048576,
+        "log_level": "@HUB_FIRMWARE_LOGS_LEVEL@",
+        "log_color": @HUB_FIRMWARE_LOGS_COLOR@,
+        "log_indent": @HUB_FIRMWARE_LOGS_INDENT@
+    },
+    "storage": {
+        "storage_main_max_ratio": 30,
+        "storage_main_max_limit": "1Gb",
+        "storage_temp_max_ratio": 10,
+        "storage_temp_max_limit": "52Mb",
+        "storage_map_size_default": "10Mb"
+    }
+}

@@ -1,0 +1,10 @@
+// Note: addon_defs.cpp is generated automatically from addon_defs.cpp.in. Don't modify it.
+
+namespace HubPlatform {
+namespace Addons {
+
+const char* LibPrefix = "@CMAKE_SHARED_LIBRARY_PREFIX@";
+const char* LibSuffix = "@CMAKE_SHARED_LIBRARY_SUFFIX@";
+
+}  // namespace Addons
+}  // namespace HubPlatform

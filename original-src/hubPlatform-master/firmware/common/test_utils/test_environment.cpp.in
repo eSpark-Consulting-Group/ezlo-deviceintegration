@@ -1,0 +1,43 @@
+
+#include "test_utils/test_environment.h"
+
+namespace HubPlatform {
+namespace Tests {
+
+const std::string& getSourceFolder() {
+    const static std::string sourceFolderPath( "@SOURCES_ROOT@" );
+    return sourceFolderPath;
+}
+
+const std::string& getBuildBinFolder() {
+    const static std::string binFolderPath( "@CMAKE_RUNTIME_OUTPUT_DIRECTORY@" );
+    return binFolderPath;
+}
+
+const std::string& getBuildGeneratedFolder() {
+    const static std::string binFolderPath( "@GENERATED_DIR@" );
+    return binFolderPath;
+}
+
+const std::string& getBuildAddonsBinFolder() {
+    const static std::string addonsBinFolderPath( "${CMAKE_BINARY_DIR}/addons/bin" );
+    return addonsBinFolderPath;
+}
+
+const std::string& getToolchainFolder() {
+    const static std::string binFolderPath( "@TOOLCHAIN_FOLDER@" );
+    return binFolderPath;
+}
+
+const std::string& getComponentTestsFolder() {
+    const static std::string componentTestsPath( getSourceFolder() + "/firmware/component_tests"  );
+    return componentTestsPath;
+}
+
+const std::string& getTestsPoligonFolder() {
+    const static std::string testsPoligonFolderPath( "@TESTS_POLIGON_DIR@" );
+    return testsPoligonFolderPath;
+}
+
+}  // namespace Tests
+}  // namespace HubPlatform

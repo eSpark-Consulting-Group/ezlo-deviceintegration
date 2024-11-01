@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import os
+
+f = os.popen('/opt/firmware/scripts/wf-cmd.sh list')
+iwlist = f.read()
+networks = "["
+for line in iwlist.split('\n'):
+    if line!='':
+        networks=networks+line+','
+networks = networks[1:-1]
+networks=networks+']'
+print 'Content-type: text/html\n\n{"result":{"wifiList":[',networks,'}}'

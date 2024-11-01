@@ -1,0 +1,19 @@
+{
+  "id": "cloud_devices",
+  "version": "1.0",
+  "type": "extension",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+  "permissions": [
+    "cloud_devices",
+    "core"
+  ],
+  "startup": "scripts/startup",
+  "teardown": "scripts/teardown"
+}

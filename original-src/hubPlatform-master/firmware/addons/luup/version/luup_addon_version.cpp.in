@@ -1,0 +1,13 @@
+#include "luup/version/luup_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Luup {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_LUUP_VERSION@" );
+}
+
+}  // namespace Luup
+}  // namespace Addons
+}  // namespace HubPlatform

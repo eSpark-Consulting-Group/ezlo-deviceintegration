@@ -1,0 +1,11 @@
+{
+    "status": 1,
+    "data": {
+        "url": "http://127.0.0.1:8017/external-upload-url",
+        "generated_ms": 1669195472423,
+        "expires_ms": 1669199072423,
+        "storage_file_uuid": "a3705450-6b10-dddd-abb5-55b43ed72149",
+        "upload_uuid": "a3731370-6b10-eeee-abb5-55b43ed72149",
+        "key": "storage_file_key"
+    }
+}

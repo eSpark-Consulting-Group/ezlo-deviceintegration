@@ -1,0 +1,423 @@
+#ifndef ERROR_CODES_H
+#define ERROR_CODES_H
+
+#include "json_utils/json_fwd.h"
+
+#include <string>
+#include <tuple>
+#include <stdexcept>
+
+class Errors {
+public:
+    // General error codes
+    enum class Codes {
+        TRANSPORT_ERROR = -32300,  // looks like unused
+        SYSTEM_ERROR = -32400,     // looks like unused
+        APPLICATION_ERROR = -32500,
+        INVALID_REQUEST = -32600,
+        METHOD_NOT_FOUND = -32601,
+        INVALID_PARAMS = -32602,
+        INTERNAL_ERROR = -32603,
+        PARSE_ERROR = -32700,  // looks like unused
+    };
+
+    enum Error {
+        OK,
+        USER_DOESNT_HAVE_PERMISSION,
+        CLOSED_FOR_ALL,
+        DEVICES_LOCKED,
+        CANT_EDIT_USER,
+        CANT_GET_EZLOS_FOR_THIS_USER,
+        CANT_GET_TOKEN_FOR_THIS_USER,
+        UNKNOWN_PERMISSION,
+        BAD_PASSWORD,
+        USER_HAS_LOGGED,
+        WRONG_CURRENT_PASSWORD,
+        CANT_DELETE_USER,
+        CANT_BLOCK_USER,
+        CANT_EDIT_EMAIL,
+        USER_EXISTS,
+        OWNER_CANT_BE_UNBOUND,
+        DB_ERROR,  // problems during working with DB
+
+        EMAIL_IS_NOT_CONFIRMED,
+        USER_NOT_FOUND,
+        KEY_NOT_FOUND,
+        EMAIL_NOT_EXISTS,
+        CANT_GET_HASH,
+        USER_BLOCKED,
+        USER_DELETED,
+        USER_NOT_LOGGED,
+        USER_DISABLED,
+
+        TOKEN_GENERATE_FAIL,
+        NO_TOKEN_FOUND,
+        TOKEN_HAS_NO_USER,
+        TOKEN_HAS_NO_SERIAL,
+        TOKEN_USED,
+        TOKEN_EXPIRED,
+
+        IMAGE_TOO_LARGE,
+        IMAGE_NOT_FOUND,
+
+        EZLO_NOT_REGISTERED,
+        EZLO_NOT_FOUND,
+        EZLO_NOT_CONNECTED,
+        EZLO_NOT_LINKED,
+        CANT_SEND_TO_EZLO,
+        EZLO_DELETED,
+        EZLO_BECAME_ONLINE,
+
+        BAD_BACKEND_PASS,
+        EZLO_ALREADY_REGISTERED_ON_NMA,
+
+        NO_BACKUPS,
+        ADAPTER_UNSUPPORTED,
+        ADAPTER_UNAVAILABLE,
+
+        EZLO_ALREADY_REGISTERED,
+        CANT_RUN_SCRIPT_AFTER_RESTORE_BACKUP,
+        STOP_SCRIPT_RUN_ERROR,
+        WRONG_BACKUP_VERSION,
+        BAD_BACKUP_DATA,
+        UNCOMPRESS_ERROR,
+        UNPACKED_SIZE_ERROR,
+        MD5_ERROR,
+        UNKNOWN_DATA_TYPE,
+        NO_ENVM_SECTION_IN_BACKUP,
+        NO_ZDDX_SECTION_IN_BACKUP,
+        NO_ZDDXSIZE_SECTION_IN_BACKUP,
+        NO_HOMEID_SECTION_IN_BACKUP,
+        ENVM_UNCOMPRESS_ERROR,
+        ZDDX_UNCOMPRESS_ERROR,
+        STICK_WRITE_ERROR,
+
+        CANT_DOWNLOAD_FIRMWARE,
+        CANT_UPLOAD_DATA,
+        CANT_DOWNLOAD_DATA,
+        CANT_VERIFIED,
+        CANT_DECRYPT,
+        CANT_UNPACK,
+        UPDATE_ZDDX_ERROR,
+        DEPENDENCIES_UPDATE_ERROR,
+        UPDATE_OPERATIONS_ERROR,
+        UNEXPECTED_ERROR,
+        BATTERY_LOW,
+
+        SEND_FILE_ERROR,
+        ERROR_OPENING_FILE,
+        SET_LOGLEVEL_ERROR,
+        SEND_LOGS_ERROR,
+
+        SCRIPT_OPEN_ERROR,
+        SCRIPT_ERROR,
+        REMOVE_NET_ERROR,
+        ADD_NET_ERROR,
+        CHECK_ERROR,
+        RESET_WIFI_ERROR,
+
+        NOT_SENT_TO_GATEWAY,
+        ZWAVE_BUSY,
+        GATEWAY_BUSY,
+        GATEWAY_COMMAND_IS_EMPTY,
+        DEVICE_BUSY,
+        DEVICES_NOT_FOUND,
+        NO_DEVICE_FOUND,
+        NO_SUBDEVICE_FOUND,
+        NO_GATEWAY_FOUND,
+        SUCH_NAME_ALREADY_EXISTS,
+        DEVICE_CHECK_NOT_SUPPORTED,
+        NO_ITEM_FOUND,
+
+        BACKUP_CREATE_FAILED,
+        BACKUP_RESTORE_FAILED,
+        GLOBAL_LOCK_FAILED,
+
+        SCENE_IS_OVERLAPPING,
+        SCENE_WRONG_WHEN_BLOCK,
+        SCENE_WRONG_THEN_BLOCK,
+        SCENE_WRONG_ELSE_BLOCK,
+        SCENE_WRONG_THEN_GROUPS_BLOCK,
+        SCENE_WRONG_ELSE_GROUPS_BLOCK,
+        SCENE_GLOBAL_RESTRICTION_MULTIPLE_BLOCKS,
+        SCENE_ACTION_GROUP_EXIST_WRONG_SCENE,
+        SCENE_ACTION_GROUP_NOT_EXIST,
+        SCENE_ACTION_GROUP_UNUSED,
+        SCENE_UNSUPPORTED_ACTION_BLOCK,
+        SCENE_IS_USED_NOT_SUPPORTED_METHOD,
+        SCENE_NOT_SUPPORTED_FEATURE_IS_USED,
+        SCENE_LOAD_FROM_JSON_IS_FAILED,
+        SCENE_DOES_NOT_EXIST,
+        SCENE_CANT_BE_CLONED,
+        SCENE_WHEN_SAME_ITEM_IN_AND,
+        SCENE_WHEN_SAME_BUTTON_IN_AND,
+        SCENE_WHEN_NOT_INTERSECT_NUMBERS,
+        SCENE_WHEN_CONTAIN_MORE_THAN_ONE_TIME,
+        SCENE_WHEN_INTERVAL_WITH_OTHER_TIME_EVENT_IN_AND,
+        SCENE_WHEN_TYPE_MISMATCH,
+        SCENE_WHEN_SOURCE_TYPE_MISMATCH,
+        SCENE_WHEN_MULTIPLE_SOURCES_PROHIBITED,
+        SCENE_DATE_RANGE_NOT_DEFINED,
+        SCENE_WRONG_TIME_FORMAT,
+        SCENE_WRONG_DATE,
+        SCENE_WRONG_TIME,
+        SCENE_WHEN_RECURSIVE_EXECUTE,
+        SCENE_CYCLE_DETECTED,
+        SCENE_ACTION_RECURSIVE_EXECUTE,
+        SCENE_BLOCK_DOES_NOT_EXIST,
+        SCENE_TOGGLE_VALUE_ERROR,
+        SCENE_BLOCK_ID_DUPLICATE,
+
+        REMOTE_PORT_FORWARDING_FAILED,
+
+        STATIC_SERVER_UNAVAILABLE,
+        STATIC_SERVER_BAD_JSON,
+        STATIC_SERVER_BAD_DATA,
+
+        NMA_TEMPLATE_EXISTS,
+
+        MEDIA_STREAM_SUBSYSTEM_FAILURE,
+        MEDIA_STREAM_INVALID_PAGE_ID,
+        FFMPEG_FAILURE_ADD,
+        FFMPEG_FAILURE_REMOVE,
+        FFMPEG_FAILURE_CFG_LOAD,
+        FFMPEG_FAILURE_CFG_SAVE,
+        FFMPEG_FAILURE_STREAM_REGISTER,
+        FFMPEG_FAILURE_STREAM_RUN,
+        FFMPEG_FAILURE_STREAM_STOP,
+        FFMPEG_FAILURE_STREAM_RESTART,
+        FFMPEG_FAILURE_STREAM_STATUS,
+        CAMERA_SUBSYSTEM_INTERNAL_ERROR,
+        CAMERA_BAD_CAMERA_URL,
+        CAMERA_BAD_FTP_URL,
+        CAMERA_ID_OR_URL_MISSING,
+        CAMERA_BAD_NOT_EXISTING_ID,
+        CAMERA_ID_MISSING,
+        CAMERA_SENDER_MISSING,
+
+        SHUTDOWN_MODE_ENTERED,
+
+        BAD_REQUEST_HASH_NOT_EXISTS,
+        BAD_PARAMS,
+        UNEXPECTED_REQUEST,
+        INVALID_VALUE_RANGE,
+
+        BAD_USER_DATA,
+        TOKEN_CREATION_ERROR,
+        KEY_GENERATION_ERROR,
+        COMPRESS_ERROR,
+        DATA_SAVE_ERROR,
+
+        SERIAL_TOO_SHORT,
+        PASSWORD_IS_TOO_SHORT,
+        KEY_IS_EMPTY,
+        TOKEN_EMPTY,
+        HASH_IS_EMPTY,
+        ID_IS_EMPTY,
+        PARENT_ID_IS_EMPTY,
+        MESSAGE_HAS_EMPTY_METHOD,
+        WRONG_UNIT_AVAILABLE_UNITS,
+        UNKNOWN_CONDITION_FILTER,
+        WRONG_PARAMS,
+        EMPTY_FIELD,
+        WRONG_FIELD,
+        CONSTANT_PARAMS,
+
+        UI_TYPE_NOT_FOUND,
+
+        UNKNOWN_METHOD,
+        GENERAL_ERROR,
+
+        BLE_ALREADY_REGISTERED_ON_NMA,
+        BLE_NOT_CONNECTED,
+        BLE_DELETED,
+        BLE_NOT_FOUND,
+        CANT_GET_BLE_FOR_THIS_USER,
+
+        RPC_CALL_QUEUE_OVERFLOW,
+
+        SPREAD_BUS_IS_NOT_OPERATABLE,
+        SPREAD_BUS_ERROR,
+
+        OBJECT_NOT_FOUND,
+
+        MAIL_SENDING_ERROR,
+        INTERNAL_OPERATION_ERROR,
+        INTERNAL_UNHANDLED_EXCEPTION_ERROR,
+        LENGTHY_ASYNC_OPERATION_ERROR,
+        UNCANCELABLE_OPERATION_IS_IN_PROGRESS,
+
+        NO_BACKUP_DATA_PRESENT,
+
+        CONFIRMATION_EMAIL_FAILURE,
+
+        EZLO_HUB_SERIAL_NUMBER_IS_INVALID,
+
+        EZLO_REGISTRATION_TIMEOUT,
+        EZLO_MIGRATION_FLOW_ERROR,
+        EZLO_ASSIGN_ERROR,
+        EZLO_AUTH_ERROR,
+        ROOM_NOT_FOUND,
+
+        BUS_REQUEST_TIMEOUT,
+        BUS_MESSAGE_TOO_LONG,
+        BUS_INTERNAL_ERROR,
+
+        BACKUP_CREATE_TABLE_EMPTY,
+        BACKUP_CREATE_UNZIPPING_ERROR,
+
+        FOLDER_IS_NOT_EXIST,
+
+        JSON_PARSE_ERROR,
+
+        ENVM_SAVE_TO_FILE,
+        ENVM_WRITE_FROM_FILE,
+        CANT_PLACE_SUBDEVICE,
+        ENTRY_LIMIT_REACHED,
+
+        // Network manager
+        NETWORK_INVALID_INTERFACE,
+        NETWORK_INFO_GETTING_ERROR,
+        NETWORK_COULD_NOT_CONNECT,
+        NETWORK_TEST_BAD_REQUEST_ERROR,
+        NETWORK_TEST_RETURN_STATUS_ERROR,
+        NETWORK_TEST_CONNECTION_ERROR,
+        NETWORK_INTERFACE_NOT_UP,
+        NETWORK_INTERFACE_NOT_CONNECTED,
+        NETWORK_HAS_NO_INTERNET,
+        NETWORK_SETTINGS_SET_FAILED,
+        WIFI_SCAN_FAILED,
+        MODEM_SIM_NO_PRESENT,
+        MODEM_INVALID_PIN,
+        MODEM_NOALLOWED_OPERATOR,
+        MODEM_BAD_AUTH,
+        MODEM_BAD_INTERNET_PARAMETERS,
+        MODEM_SIM_CARD_ERROR,
+        MODEM_SIM_PIN_CODE_IS_REQUIRED,
+        MODEM_SIM_PUK_CODE_IS_REQUIRED,
+        MODEM_SIM_PUK_CODE_LAST_ATTEMPT,
+        MODEM_OPERATION_NOALLOWED,
+        MODEM_HUNG,
+        MODEM_NO_REGISTRATION,
+        NETWORK_OPERATION_PROHIBITED,
+        NETWORK_UNKNOWN_ERROR,
+
+        DEVICE_IS_PERSISTENT,
+
+        // Extensions manager
+        PLUGIN_DOWNLOAD_FAILED = 5001,
+        PLUGIN_INSTALL_FAILED,
+        PLUGIN_UNINSTALL_FAILED,
+        PLUGIN_UPGRADE_FAILED,
+        PLUGIN_RUN_FAILED,
+        ANONYMOUS_PLUGIN_ACQUIRED,
+        ANONYMOUS_PLUGIN_DOES_NOT_EXIST,
+        ANONYMOUS_PLUGIN_FAILED_TO_ACQUIRE,
+
+        CUSTOM_PLUGIN_FAILED_TO_DOWNLOAD,
+        CUSTOM_PLUGIN_FAILED_TO_DEPLOY,
+        CUSTOM_PLUGIN_NO_INSTALLED,
+        CUSTOM_PLUGIN_ALREADY_INSTALLED,
+        CUSTOM_PLUGIN_OPERATION_IS_RUNNING,
+        CUSTOM_PLUGIN_INVALID_METADATA,
+        CUSTOM_PLUGIN_INVALID_CHECKSUM,
+        CUSTOM_PLUGIN_DOWNLOADER_BUSY,
+        CUSTOM_PLUGIN_GATEWAY_INVALID,
+        CUSTOM_PLUGIN_ARCHIVE_EMPTY,
+
+        LUA_SCRIPT_ERROR,
+        LUA_SCRIPT_TIMEOUT,
+        LUA_SCRIPT_OPEN_ERROR,
+
+        HOUSE_MODE_DOES_NOT_EXIST,
+        HOUSE_MODE_NAME_DOES_NOT_EXIST,
+        HOUSE_MODES_AMBIGUOUS_NAME,
+        HOUSE_MODES_INVALID_PHASE,
+        HOUSE_MODE_COMMAND_IS_OUTDATED,
+        HOUSE_MODE_ID_DOES_NOT_CORRESPOND,
+
+        SCENES_ITEM_DOES_NOT_EXIST,
+        SCENES_ITEM_VALUE_TYPE_ERROR,
+        SCENES_EXPRESSION_DOES_NOT_EXIST,
+        SCENES_EXPRESSION_ERROR,
+        SCENES_SET_VARIABLE_ERROR,
+        SCENES_EXPRESSION_TYPE_MISMATCH,
+        SCENES_EXPRESSION_SET_VALUE_ERROR,
+        SCENES_EXPRESSION_VALUE_ERROR,
+        SCENES_EXPRESSION_PARAMETERS_ERROR,
+        SCENE_ACTION_TYPE_MISMATCH,
+
+        INVALID_VALUE_SCALE,
+        SCALE_NOT_FOUND,
+
+        IMPOSSIBLE_TO_GENERATE_UNIQUE_ID,
+        FIRMWARE_FEATURE_DISABLED,
+
+        FAILED_TO_EXECUTE_AT_COMMAND_EMBEDDED,
+
+        DELETE_GROUP_IMPOSSIBLE,
+
+        MQTT_CLIENT_NOT_REGISTERED,
+        MQTT_INVALID_CLIENT_NAME,
+        MQTT_MESSAGE_TOO_LONG,
+
+        SEVERITY_DOES_NOT_EXIST,
+        ALREADY_EXISTS,
+        DOES_NOT_EXIST,
+        TOO_LONG,
+        SYSTEM_ERROR,
+        NOT_SUPPORTED,
+
+        INVALID_SUBSCRIPTION_CAPABILITY_NAME,
+        INVALID_SUBSCRIPTION_VARIABLE_NAME,
+        INVALID_ITEM_NAME,
+
+        GET_RAM_INFO_ERROR,
+        GET_FS_INFO_ERROR,
+        GET_PROCESSES_INFO_ERROR,
+        NETWORK_TEST_ALREADY_STARTED,
+        WALK_TEST_ALREADY_STARTED,
+        WALK_TEST_NOT_STARTED,
+        WALK_TEST_INCORRECT_OPERATION_ID,
+        WALK_TEST_OUTSIDE_EXTEND_PERIOD,
+
+        LOCAL_NOTIFICATION_TCDS_DATA_PROCESSING_ERROR,
+        LOCAL_NOTIFICATION_STORAGE_IS_FULL,
+        EZLO_TCDS_UPDATED
+
+    };
+
+    class Exception : public std::runtime_error {
+    public:
+        Exception( Errors::Error error )
+        : runtime_error( Errors::getStringRepresentation( error ) )
+        , m_error( error ) {}
+
+        Errors::Error getError() const;
+        std::string getStringRepresentation() const;
+
+    private:
+        Errors::Error m_error;
+    };
+
+    static constexpr const char* ERROR_FIELD = "error";
+
+    static JsonObject get( Error error );
+    static std::string getStringRepresentation( Error error );
+    static void get( Error error, JsonObject& result );
+    static void getBadRequest( const std::string& fieldName, JsonObject& result );
+    static void getEmptyString( const std::string& fieldName, JsonObject& result );
+    static void getWrongParams( const std::string& fieldName, JsonObject& result );
+    static void getInvalidValueRange( const std::string& fieldName, JsonObject& result, const std::string& reason );
+    static void getBadObjId( const std::string& id, JsonObject& result );
+    static void getBadEmail( const std::string& reason, JsonObject& result );
+    static void getBadOwner( const std::string& serial, JsonObject& result );
+    static void getBadStatic( const std::string& reason, JsonObject& result );
+    static void getBadEnvm( const std::string& reason, JsonObject& result );
+    static void makeObject( Codes code, const std::string& data, const std::string& message, JsonObject& result );
+    static void update( JsonObject& message );
+    static void updateToString( JsonObject& message );
+    static std::string getData( const Error& error );
+};
+
+#endif  // ERROR_CODES_H

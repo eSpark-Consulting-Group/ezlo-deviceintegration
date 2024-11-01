@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+ARG TARGET_PLATFORM
+#FROM --platform=$TARGET_PLATFORM ubuntu:20.04@sha256:f070ebd4643c37026ed44149d67d92efa317e658b87246dc648470a238730860
+FROM --platform=$TARGET_PLATFORM ubuntu:20.04
+
+#RUN apt-get update && apt-get install -y libatomic1 libssl1.1 libdbus-1-3 libglib2.0-0 avahi-daemon dbus iproute2 net-tools && rm -rf /var/lib/apt/lists/
+RUN mkdir -p /var/log/firmware
+RUN ln -snf /usr/share/zoneinfo/UTC /etc/localtime && echo UTC > /etc/timezone
+RUN apt-get update \
+    && apt-get install -y libatomic1 libssl1.1 libdbus-1-3 libglib2.0-0 avahi-utils avahi-daemon libnss-mdns net-tools iproute2 iputils-ping rsync openssh-client openssh-server sshpass vim-tiny cron logrotate curl wget lsof \
+    && rm -rf /var/lib/apt/lists/
+RUN ln -snf /usr/share/zoneinfo/UTC /etc/localtime && echo UTC > /etc/timezone
+RUN sed -i 's,^#enable-dbus=.*,enable-dbus=no,' /etc/avahi/avahi-daemon.conf \
+    && sed -i 's,^#PermitRootLogin .*,PermitRootLogin yes,' /etc/ssh/sshd_config \
+    && sed -i 's,^#Port .*,Port 50022,' /etc/ssh/sshd_config

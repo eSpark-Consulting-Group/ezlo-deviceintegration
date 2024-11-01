@@ -1,0 +1,187 @@
+#!/bin/sh
+
+wifi down > /dev/null 2>&1
+
+set -e
+
+if [ $# -lt 1 ]; then
+  echo "NAME"
+  echo "    ble_test"
+  echo ""
+  echo "SYNOPSIS"
+  echo "    ble_test [--frequency frequency | --channel channel] [--length length] [--payload payload] [--phy value]"
+  echo "    ble_test [-f frequency | -c channel] [-l length] [-p payload] [-y value]"
+  echo "    ble_test --stop"
+  echo "    ble_test -s"
+  echo ""
+  echo "DESCRIPTION"
+  echo "    Utility to control parameters of Bluetooth LE module"
+  echo ""
+  echo "OPTIONS"
+  echo "    -f, --frequency frequency"
+  echo "        Set radio frequency (2402 - 2480)"
+  echo "        Default: 2402"
+  echo "        Example: --frequency 2441"
+  echo ""
+  echo "    -c, --channel channel"
+  echo "        Set radio channel (0-39)"
+  echo "        Default: 0"
+  echo "        Example: --channel 39"
+  echo ""
+  echo "    -l, --length length"
+  echo "        Set length of test data (up to 255)"
+  echo "        Default: 37"
+  echo "        Example: --length 64"
+  echo ""
+  echo "    -p, --payload payload"
+  echo "        Set payload"
+  echo "        Possible values: PRBS9, 11110000, 10101010, PRBS15, 11111111, 00000000, 00001111, 01010101"
+  echo "        Default: PRBS9"
+  echo "        Example: --payload 11110000"
+  echo ""
+  echo "    -y, --phy value"
+  echo "        Set PHY rate for BLE Enhanced Tx"
+  echo "        Possible values: 1M, 2M, CodedS8, CodedS2"
+  echo "        Example: --phy 2M"
+  echo ""
+  echo "    -s, --stop"
+  echo "        Stop testing"
+
+  exit 1
+fi
+
+FREQUENCY_VALUE=2402
+CHANNEL_VALUE=0
+PAYLOAD_VALUE=PRBS9
+LENGTH_VALUE=37
+PHY_VALUE=
+
+while [ $# -gt 0 ]
+do
+  case $1 in
+  -f | --frequency)
+    FREQUENCY_VALUE="$2"
+    CHANNEL_VALUE=$((($2-2402)/2))
+    shift
+    ;;
+  -c | --channel)
+    FREQUENCY_VALUE=$(($2*2+2402))
+    CHANNEL_VALUE="$2"
+    shift
+    ;;
+  -l | --length)
+    LENGTH_VALUE="$2"
+    shift
+    ;;
+  -p | --payload)
+    PAYLOAD_VALUE="$2"
+    shift
+    ;;
+  -y | --phy)
+    PHY_VALUE="$2"
+    shift
+    ;;
+  -s | --stop)
+    STOP=1
+    ;;
+  *) # unknown option
+    echo "$1 is not a valid option"
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+if [ -n "$CHANNEL_VALUE" ]; then
+  CHANNEL="$(printf '%.2X' "$CHANNEL_VALUE")" # C
+else
+  CHANNEL="00" # E
+fi
+
+PACKET_LEN="$(printf '%.2X' $LENGTH_VALUE)" # D
+
+case $PAYLOAD_VALUE in
+PRBS9)
+  PAYLOAD="00" # E
+  ;;
+11110000)
+  PAYLOAD="01" # E
+  ;;
+10101010)
+  PAYLOAD="02" # E
+  ;;
+PRBS15)
+  PAYLOAD="03" # E
+  ;;
+11111111)
+  PAYLOAD="04" # E
+  ;;
+00000000)
+  PAYLOAD="05" # E
+  ;;
+00001111)
+  PAYLOAD="06" # E
+  ;;
+01010101)
+  PAYLOAD="07" # E
+  ;;
+*) # unknown option
+  echo "$PAYLOAD_VALUE is not a valid payload value"
+  exit 1
+  ;;
+esac
+
+case $PHY_VALUE in
+1M)
+  PHY="01" # F
+  ;;
+2M)
+  PHY="02" # F
+  ;;
+CodedS8)
+  PHY="03" # F
+  ;;
+CodedS2)
+  PHY="04" # F
+  ;;
+*) # unknown option
+  PHY=
+  ;;
+esac
+
+ehcitool () {
+  echo "hcitool $*"
+  hcitool "$@" > /dev/null
+}
+
+if [ -n "$STOP" ]; then
+  ehcitool cmd 0x03 0x0003
+  echo ""
+  echo "# STOPPED"
+  exit 0;
+fi
+
+echo "# Channel         = ${CHANNEL_VALUE:-n/a}"
+echo "# Frequency       = ${FREQUENCY_VALUE:-n/a}"
+echo "# Length          = ${LENGTH_VALUE}"
+echo "# Payload         = ${PAYLOAD_VALUE}"
+echo "# PHY             = ${PHY_VALUE:-default}"
+echo ""
+
+ehcitool cmd 0x03 0x0003
+ehcitool cmd 0x03 0x1a 0x03
+ehcitool cmd 0x03 0x05 0x02 0x00 0x02
+ehcitool cmd 0x06 0x03
+
+ehcitool cmd 0x03 0x0003
+
+if [ -z "$PHY" ]; then
+  echo "#                      |CH|LN|PL"
+  ehcitool cmd 0x08 0x001e ${CHANNEL} ${PACKET_LEN} ${PAYLOAD}
+else
+  echo "#                      |CH|LN|PL|PH"
+  ehcitool cmd 0x08 0x0034 ${CHANNEL} ${PACKET_LEN} ${PAYLOAD} ${PHY}
+fi
+
+echo ""
+echo "# STARTED"

@@ -1,0 +1,19 @@
+{
+  "id": "security_test",
+  "version": "1.0",
+  "type": "extension",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+    "core",
+    "security",
+    "logging"
+  ]
+}

@@ -1,0 +1,9 @@
+namespace HubPlatform {
+namespace Opkg {
+namespace Resources {
+
+const char* TestFilesPath = "@CMAKE_CURRENT_SOURCE_DIR@/tests/resources";
+
+}  // namespace Resources
+}  // namespace Opkg
+}  // namespace HubPlatform

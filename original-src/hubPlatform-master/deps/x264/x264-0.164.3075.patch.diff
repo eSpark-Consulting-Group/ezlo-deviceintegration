@@ -1,0 +1,42 @@
+--- a/configure	2019-12-17 23:45:07.000000000 +0200
++++ b/configure	2021-10-26 15:46:52.560338887 +0300
+@@ -45,6 +45,7 @@
+   --host=HOST              build programs to run on HOST
+   --cross-prefix=PREFIX    use PREFIX for compilation tools
+   --sysroot=SYSROOT        root of cross-build tree
++  --byte-order=ORDER       force byte ordering (used for amd64 builds, because 'strings' util is not present in toolchain), 'big-endian' or 'little-endian'
+ 
+ External library support:
+   --disable-avs            disable avisynth support
+@@ -376,6 +377,7 @@
+ chroma_format="all"
+ compiler="GNU"
+ compiler_style="GNU"
++force_byte_order=""
+ opencl="yes"
+ vsx="auto"
+ 
+@@ -508,6 +510,9 @@
+             CFLAGS="$CFLAGS --sysroot=$optarg"
+             LDFLAGS="$LDFLAGS --sysroot=$optarg"
+             ;;
++        --byte-order=*)
++            force_byte_order="$optarg"
++            ;;
+         --bit-depth=*)
+             bit_depth="$optarg"
+             if [ "$bit_depth" != "8" -a "$bit_depth" != "10" -a "$bit_depth" != "all" ]; then
+@@ -992,7 +997,12 @@
+ 
+ # skip endianness check for Intel Compiler and MSVS, as all supported platforms are little. each have flags that will cause the check to fail as well
+ CPU_ENDIAN="little-endian"
+-if [ $compiler = GNU ]; then
++if [ "$force_byte_order" != "" ] ; then
++    if [ "$force_byte_order" != "little-endian" -a "$force_byte_order" != "big-endian" ] ; then
++        die "unknown endian $force_byte_order"
++    fi
++    CPU_ENDIAN="$force_byte_order"
++elif [ $compiler = GNU ]; then
+     echo "int i[2] = {0x42494745,0}; double f[2] = {0x1.0656e6469616ep+102,0};" > conftest.c
+     $CC $CFLAGS conftest.c -c -o conftest.o 2>/dev/null || die "endian test failed"
+     if (${cross_prefix}strings -a conftest.o | grep -q BIGE) && (${cross_prefix}strings -a conftest.o | grep -q FPendian) ; then

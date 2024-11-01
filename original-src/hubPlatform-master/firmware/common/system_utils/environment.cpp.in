@@ -1,0 +1,245 @@
+#include "system_utils/environment.h"
+
+#include "system_utils/thread_unique_safe_wrapper.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
+namespace HubPlatform {
+namespace Environment {
+namespace {
+
+threads::UniqueSafeWrapper< std::string >& g_firmwareRootFolder() {
+    static threads::UniqueSafeWrapper< std::string > value( "@HUB_FIRMWARE_DIR@" );
+    return value;
+}
+threads::UniqueSafeWrapper< std::string >& g_logsFolder() {
+    static threads::UniqueSafeWrapper< std::string > value( "@LOG_DIR@" );
+    return value;
+}
+threads::UniqueSafeWrapper< std::string >& g_tempDataFolder() {
+    static threads::UniqueSafeWrapper< std::string > value( "/tmp" );
+    return value;
+}
+threads::UniqueSafeWrapper< std::string >& g_provisionDataFolder() {
+    static threads::UniqueSafeWrapper< std::string > value( "/tmp" );
+    return value;
+}
+threads::UniqueSafeWrapper< std::string >& g_dataFolder() {
+    static threads::UniqueSafeWrapper< std::string > value( "" );
+    return value;
+}
+threads::UniqueSafeWrapper< std::string >& g_busName() {
+    static threads::UniqueSafeWrapper< std::string > value( "4803" );
+    return value;
+}
+
+std::string calculateProcessPath() {
+    int length = 0;
+    char fullpath[ FILENAME_MAX ] = "";
+
+    length = ::readlink( "/proc/self/exe", fullpath, sizeof( fullpath ) );
+
+    if( ( length < 0 ) || length >= sizeof( fullpath ) ) {
+        return getenv( "_" );
+    }
+
+    fullpath[ length ] = '\0';
+    return fullpath;
+}
+
+std::string calculateProcessName() {
+    const auto& processPath = getCurrentProcessPath();
+    const auto separatorPosition = processPath.rfind( '/' );
+
+    return ( separatorPosition == std::string::npos ) || ( separatorPosition >= ( processPath.size() - 1 ) ) ?
+           processPath :
+           processPath.substr( separatorPosition + 1 );
+}
+
+}  // namespace
+
+void setFirmwareRootFolder( std::string firmwarePath ) {
+    g_firmwareRootFolder().set( std::move( firmwarePath ) );
+}
+
+void setTempDataFolder( std::string tempFolderPath ) {
+    g_tempDataFolder().set( std::move( tempFolderPath ) );
+}
+
+void setLogsFolder( std::string logsPath ) {
+    g_logsFolder().set( std::move( logsPath ) );
+}
+
+void setProvisionDataFolder( std::string provisionFolderPath ) {
+    g_provisionDataFolder().set( std::move( provisionFolderPath ) );
+}
+
+void setDataFolder( std::string dataFolderPath ) {
+    g_dataFolder().set( std::move( dataFolderPath ) );
+}
+
+void setBusName( std::string busName ) {
+    g_busName().set( std::move( busName ) );
+}
+
+std::string getFirmwareRootFolder() {
+    std::string rootFolder;
+    g_firmwareRootFolder().get( rootFolder );
+    return rootFolder;
+}
+
+std::string getBinariesFolder() {
+    return getFirmwareRootFolder() + "/bin";
+}
+
+std::string getConfigsFolder() {
+    return getFirmwareRootFolder() + "/etc";
+}
+
+std::string getCustomPackagesFolder() {
+    return getConfigsFolder() + "/custom_packages";
+}
+
+std::string getSystemConfigsFolder() {
+#if defined( __HUB_TYPE_LOCAL__ )
+    return "@HUB_LOCAL_DIRECTORY@/etc";
+#else
+    return "/etc";
+#endif
+}
+
+std::string getDataFolder() {
+    std::string dataFolder;
+    g_dataFolder().get( dataFolder );
+    return dataFolder.empty() ? getFirmwareRootFolder() + "/data" : dataFolder;
+}
+
+std::string getMediaFolder() {
+    return getDataFolder() + "/media";
+}
+
+std::string getVideosFolder() {
+    return getMediaFolder() + "/video";
+}
+
+std::string getSnapshotsFolder() {
+    return getMediaFolder() + "/snapshots";
+}
+
+std::string getLibrariesFolder() {
+#if defined( __HUB_TYPE_LOCAL__ )
+    return "@CMAKE_BINARY_DIR@/lib";
+#else
+    return getFirmwareRootFolder() + "/lib";
+#endif
+}
+
+std::string getCertificateFolder() {
+    return getDataFolder() + "/certs";
+}
+
+std::string getAddonsFolder() {
+    return getBinariesFolder() + "/addons";
+}
+
+std::string getPluginsFolder() {
+    return getFirmwareRootFolder() + "/plugins";
+}
+
+std::string getCustomPluginsFolder() {
+    return getDataFolder() + "/custom_plugins";
+}
+
+std::string getImagesFolder() {
+    return getFirmwareRootFolder() + "/images";
+}
+
+std::string getLogsFolder() {
+    std::string logsFolder;
+    g_logsFolder().get( logsFolder );
+    return logsFolder;
+}
+
+std::string getPostponedLogsFolder() {
+    return getPersistentFolder() + "/logs/postponed";
+}
+
+std::string getRotatedLogsFolder() {
+    return getPersistentFolder() + "/logs/rotated";
+}
+
+std::string getPendingLogsFolder() {
+    return getPersistentFolder() + "/logs/pending";
+}
+
+std::string getLuaPackagesFolder() {
+    return getFirmwareRootFolder() + "/lua-packages";
+}
+
+std::string getTempDataFolder() {
+    std::string tempFolderPath;
+    g_tempDataFolder().get( tempFolderPath );
+    return tempFolderPath;
+}
+
+std::string getProvisionDataFolder() {
+    std::string provisionFolderPath;
+    g_provisionDataFolder().get( provisionFolderPath );
+    return provisionFolderPath;
+}
+
+std::string getBusName() {
+    std::string busName;
+    g_busName().get( busName );
+    return busName;
+}
+
+std::string getPersistentFolder() {
+    return "/home";
+}
+
+const std::string& getCurrentProcessPath() {
+    const static std::string processPath = calculateProcessPath();
+    return processPath;
+}
+
+const std::string& getCurrentProcessName() {
+    const static auto processName = calculateProcessName();
+    return processName;
+}
+
+const std::string& getZwaveDevice() {
+    const static std::string devicePath = "/dev/stick";
+    return devicePath;
+}
+
+const std::string& getZigbeeDevice() {
+    const static std::string devicePath = "/dev/zbstick";
+    return devicePath;
+}
+
+const std::string& get2GigDevice() {
+    const static std::string devicePath = "/dev/2gig_module";
+    return devicePath;
+}
+
+bool isPhysicalHub() {
+#if( defined( __HUB_TYPE_H2__ ) || defined( __HUB_TYPE_H2_SECURE__ ) || defined( __HUB_TYPE_BEEWAVE__ ) || defined __HUB_TYPE_G150__ )
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool isLogicalHub() {
+#if( defined( __HUB_TYPE_LOCAL__ ) || defined( __HUB_TYPE_VHUB__ ) )
+    return true;
+#else
+    return false;
+#endif
+}
+
+}  // namespace Environment
+}  // namespace HubPlatform

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+TAG=firmware.logrotate
+
+OPTIONS=upload-postponed
+test -f logger && logger -e $TAG "Log Rotating: start logcmd $OPTIONS"
+
+/opt/firmware/bin/logcmd --upload-postponed --log-level=TRACE 2>&1 | logger -s -p user.notice -t $TAG
+
+EXIT_STATUS=$?
+if [ $EXIT_STATUS -ne 0 ]; then
+  logger -s -t $TAG "Command chain failed with exit status $EXIT_STATUS, options: $OPTIONS"
+fi
+
+OPTIONS=rotate
+test -f logger && logger -e $TAG "Log Rotating: start  logcmd $OPTIONS"
+
+/opt/firmware/bin/logcmd --rotate --log-level=TRACE | logger -s -p user.notice -t $TAG
+
+EXIT_STATUS=$?
+if [ $EXIT_STATUS -ne 0 ]; then
+  logger -s -t $TAG "Command chain failed with exit status $EXIT_STATUS"
+fi

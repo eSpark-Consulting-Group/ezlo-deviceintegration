@@ -1,0 +1,13 @@
+#include "zwave/version/zwave_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Zwave {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_ZWAVE_VERSION@" );
+}
+
+}  // namespace Zwave
+}  // namespace Addons
+}  // namespace HubPlatform

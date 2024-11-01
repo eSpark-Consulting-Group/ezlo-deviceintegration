@@ -1,0 +1,37 @@
+cmake_minimum_required( VERSION 3.2 )
+include(ExternalProject)
+
+set(JSON_C_PROJECT_EXT_PROJECT json-c-ext-project)
+set(JSON_C_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+list(APPEND CMAKE_OPTS
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_INSTALL_PREFIX=${JSON_C_INSTALL_DIR}
+    -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+    -DCMAKE_C_STANDARD=${CMAKE_C_STANDARD}
+)
+
+list(APPEND JSON_C_OPTS
+    -DBUILD_SHARED_LIBS=ON            
+    -DBUILD_STATIC_LIBS=OFF
+    -DDISABLE_STATIC_FPIC=OFF 
+)
+
+ExternalProject_Add(
+    ${JSON_C_PROJECT_EXT_PROJECT}
+    CMAKE_ARGS ${CMAKE_OPTS} ${JSON_C_OPTS}
+    URL ${CMAKE_CURRENT_SOURCE_DIR}/json-c-0.15.zip
+    PATCH_COMMAND bash -c "patch -p1 < ${CMAKE_CURRENT_SOURCE_DIR}/json-c-0.15.patch.diff"
+    LOG_PATCH 1
+)
+
+ExternalProject_Add_Step(
+    ${JSON_C_PROJECT_EXT_PROJECT} copy2bin
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${JSON_C_INSTALL_DIR}/lib/ ${CMAKE_BINARY_DIR}/lib
+    ALWAYS 1
+    DEPENDEES install
+)
+
+set( PACKAGE_NAME firmware-common-jsonc)
+install( DIRECTORY ${JSON_C_INSTALL_DIR}/lib DESTINATION ${PACKAGE_NAME}/opt/firmware )

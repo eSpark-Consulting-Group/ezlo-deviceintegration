@@ -1,0 +1,1749 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1233</x>
+      <y>1089</y>
+      <w>414</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>FFmpeg
+--
++FFmpeg( RtspTransport = Tcp )
+/+getPacket() : Packet/
+/+getSnapshot( Resolution&amp; ) : Packet/
+/+isValid() : bool/
+/+createConverter( Format ) : ConverterId/
+/+getConvertedPacket( ConverterId ) : Packet/
+--
+-AVFormatContext* m_inputFormatContext
+-AVCodecContext* m_codecContext
+-std::map&lt; ConverterId, AVCodec* &gt; m_outputCodecs
+--
+Responsibilities
+-- all ffmpeg objects should have wrappers for auto deleting 
+-- methods throws if case of error </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1251</x>
+      <y>783</y>
+      <w>342</w>
+      <h>225</h>
+    </coordinates>
+    <panel_attributes>/IFramework/
+--
+Codec = std::unique_ptr&lt; ICodec &gt;
+Codecs = std::vector&lt; Codec &gt;
+--
+/+getPacket() : Packet/
+/+getSnapshot( Resolution&amp; ) : Packet/
+/+isValid() : bool/
+/+createConverter( Format ) : ConverterId/
+/+getConvertedPacket( ConverterId ) : Packet/
+/+getCodecs() : Codecs/
+--
+Responsibilities
+-- initialize stream in constructor (throws exceptions)
+-- once object becomes invalid it should be deleted 
+and recreated again</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>441</w>
+      <h>774</h>
+    </coordinates>
+    <panel_attributes>The technical task
+--
+Brief
+1. add/remove stream entities
+2. create/delete RTSP streams ( stream entity should be created )
+3. start/stop stream saving of video file to the Cloud
+4. make snapshot of stream and send to the Cloud
+5. make snapshot of stream and send to the UI by HTTP response
+6. send camera addon events to plugin and broadcasts
+7. change RTSP stream link in case the controller changes IP address
+--
+The issues should be fixed
+-- random segmentation faults
+-- camera addon stucks and doesn't respond on requests
+-- camera addon should start streams are started before when camera addon is restarted
+--
+Detailed
+-- add camera stream ( save to database )
+    * emit start event if successfully created
+    * emit error event if creating failed
+-- remove camera stream
+    * emit removed event
+    * delete live stream
+    * delete stream saving to cloud
+    * remove from database
+-- create live RTSP stream
+    * emit start event if successfully created
+    * emit error event if creating failed or stream wasn't added
+    * if stream is not added then emit error
+    * do nothing if live RTSP stream is created
+-- delete live RTSP stream
+    * emit stop event
+-- if IP address is changed emit update event
+-- start live RTSP stream after camera addon start if it was created
+-- create stream saving to cloud with existing stream
+   * prepare stream saving with given settings
+   * start prerecord if needed
+	* emit created event if successfully created
+	* emit error event if creating failed or stream wasn't added
+-- delete stream saving to cloud with existing stream
+   * emit deleted event
+-- start stream saving to сloud
+   * emit started event
+   * emit error event if creating failed or stream wasn't added
+-- stop stream saving to cloud
+	* emit stopped event
+-- start stream saving to cloud  after camera addon start if it was created
+-- make stream snapshot for UI
+   * return error if stream wasn't added
+-- make stream snapshot for cloud
+   * return error if stream wasn't added
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1413</x>
+      <y>999</y>
+      <w>27</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2259</x>
+      <y>477</y>
+      <w>405</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>FileRecordController
+--
+SeparateThreadCallback = std::function&lt; void( Message, 
+                                              const std::string fileName&amp; ) &gt;
+--
++FileRecorderController( IFrameworkController, IPacketBuffer )
+/+start( FileRecordSetting, SeparateThreadCallback ) : void/
+/+stop() : void/
+/+makeSnapshot( SeparateThreadCallback ) : void /
+/+getMessageHandler() : MessageHandler/
+--
+-IFrameworkController m_frameworkController
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1584</x>
+      <y>882</y>
+      <w>225</w>
+      <h>225</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>230.0;230.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>0</x>
+      <y>810</y>
+      <w>459</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>The technical notes
+--
+-- There are three tasks are Stream reading, Video file writing and RTSP streaming
+-- These tasks should be handled in different threads for not blocking each other
+-- IFramework initializes stream in constructor (throws exceptions)
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>1287</x>
+      <y>1377</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+libffmpeg
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1332</x>
+      <y>1314</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1791</x>
+      <y>1089</y>
+      <w>423</w>
+      <h>279</h>
+    </coordinates>
+    <panel_attributes>FrameworkController
+--
+SeparateThreadCallback = std::function&lt; void( Message, 
+                                              const Packet&amp; ) &gt;
+--
+FrameworkController( IFramework )
+/+startStream() : void/
+/+stopStream() : void/
+/+isRunning() : bool/
+/+getSnapshot( Resolution&amp;, SeparateThreadCallback )/
+/+getPacketHandler() : IPacketPublisher/
+/+getEventHandler() : EventHandler/
+/+getConverterPacketHandler( ConverterId ) : IPacketPublisher/
+/+createConverter( Format ) : ConverterId/
+/+startConvertedStream( ConverterId ) : void/
+/+stopConvertedStream( ConverterId ) : void/
+--
+-ICodec m_codec
+-IPacketPublisher m_packetHandler
+-IFramework m_framework
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1314</x>
+      <y>648</y>
+      <w>270</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>Packet
+--
++std::vector&lt; uint8_t &gt; data
++std::chrono::nanoseconds timestamp
++Status status</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1413</x>
+      <y>720</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1197</x>
+      <y>666</y>
+      <w>135</w>
+      <h>459</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>40.0;490.0;10.0;490.0;10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2763</x>
+      <y>279</y>
+      <w>234</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>FileRecordSetting
+--
++fileNameStart : std::string
++prerecordedDuration : int
++segmentDuration : int
++segmentsLimit : int
++format : Format</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2331</x>
+      <y>711</y>
+      <w>522</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>template=0: EventType
+&lt;&lt;Thread Safe&gt;&gt;
+IEventPublisher
+--
+using EventHandler = 
+    std::function&lt; void( const EventType&amp; ) &gt;;
+using ListenerId = int64_t;
+--
+/+sendPacket( EventType ) : void/
+/+addListener( EventHandler&amp; ) : ListenerId/
+/+removeListener( const ListenerId&amp; id ) : void/
+--
+Responsibilities
+-- thread safely get event and send it to listeners</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2205</x>
+      <y>900</y>
+      <w>144</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;210.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>648</x>
+      <y>567</y>
+      <w>189</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+MediaType
+--
++VIDEO
++AUDIO</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>900</x>
+      <y>567</y>
+      <w>189</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+CodecType
+--
++VIDEO_H264
++AUDIO_PCM_ALAW
++AUDIO_PCM_MULAW</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>891</x>
+      <y>1071</y>
+      <w>243</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>VideoCodec
+--
+/+getMediaType() : MediaType/
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>612</x>
+      <y>1071</y>
+      <w>225</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>AudioCodec
+--
+/+getMediaType() : MediaType/
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>693</x>
+      <y>783</y>
+      <w>261</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>ICodec
+--
++ICodec( int streamIndex, 
+         int64_t bitrate, 
+         CodecType codecType )
+/+getMediaType() : MediaType/
+/+getCodecType() : CodecType/
+/+getCodecName() const : std::string/
+--
++getStreamIndex() : int
++getBitrate() : int64_t
+--
++audioChannels : int
++audioSampleRate : int
+--
+-m_streamIndex : int
+-m_bitrate : int64_t
+-m_codecType : CodecType</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>684</x>
+      <y>675</y>
+      <w>144</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>140.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>873</x>
+      <y>675</y>
+      <w>90</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>702</x>
+      <y>1008</y>
+      <w>117</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>837</x>
+      <y>1008</y>
+      <w>171</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>945</x>
+      <y>891</y>
+      <w>324</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>340.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1683</x>
+      <y>2178</y>
+      <w>261</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>OnDemandServerMediaSubsession
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>2277</y>
+      <w>459</w>
+      <h>459</h>
+    </coordinates>
+    <panel_attributes>StreamMediaSubsession
+--
+Codec = std::unique_ptr&lt; ICodec &gt;
+--
++static createNew( std::string streamId,
+                   UsageEnvironment&amp; env,
+                   const Codec&amp; codec,
+                   IPacketPublisher&amp; packetHandler,
+                   const std::string&amp; sdp
+                   size_t packetCountLimit ) : StreamMediaSubsession*
+--
+-StreamMediaSubsession( UsageEnvironment&amp; env,
+                        Codec codec,
+                        IPacketPublisher packetHandler,
+                        std::string sdp
+                        size_t packetCountLimit )
+                        
+-StreamMediaSubsession( unsigned clientSessionId,  
+                        unsigned&amp; estimatedBitrate ) override : FramedSource*
+                        
+-createNewRTPSink( Groupsock* rtpGroupsock,
+                   unsigned char rtpPayloadTypeIfDynamic,
+                   FramedSource* inputSource ) override : RTPSink*
+                   
+-extractSpsFromSdp( const std::string&amp; sdp ) : std::string
+--
+-Codecs m_codec
+-PacketHandler&amp; m_packetHandler
+-const std::string m_sps
+-const size_t m_packetCountLimit
+--
+Responsibilities
+-- create new RTP sink for each client</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1818</x>
+      <y>2232</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2214</x>
+      <y>2178</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>FramedSource
+--
+-- live555 library</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2043</x>
+      <y>2178</y>
+      <w>153</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>RTPSink
+--
+-- live555 library</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2034</x>
+      <y>2223</y>
+      <w>234</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;180.0;150.0;40.0;240.0;40.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2034</x>
+      <y>2223</y>
+      <w>81</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2160</x>
+      <y>2286</y>
+      <w>459</w>
+      <h>495</h>
+    </coordinates>
+    <panel_attributes>StreamFramedSource
+--
+Codec = std::unique_ptr&lt; ICodec &gt;
+--
++static createNew( UsageEnvironment&amp; env,
+                  IPacketPublisher&amp; packetHandler,
+                  std::unique_ptr&lt; IPacketBuffer &gt; packetBuffer,
+                  std::string streamId,
+                  int streamIndex ) : StreamFramedSource*
+                  
++receivePacket( const Packet&amp; packet ) : void
+--
+-static deliverFrame0( void* clientData ) : void
+
+-StreamFramedSource( UsageEnvironment&amp; env, 
+                     IPacketPublisher&amp; packetHandler, 
+                     std::string streamId,
+                     int streamIndex )
+
+-~StreamFramedSource() override;
+
+-doGetNextFrame() override : void;
+
+-deliverFrame() : void
+
+-notifyAboutNewFrame() : void
+--
+-m_newFrameTriggerId : EventTriggerId
+-m_packetsBuffer : std::unique_ptr&lt; IPacketBuffer &gt;
+-m_packetHandler : IPacketPublisher&amp; 
+std::string m_streamId;
+-m_listenerId = -1 : int64_t 
+--
+Responsibilities
+-- create new Framed Source
+-- listen new packets and deliver them to RTSP stream</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2304</x>
+      <y>2223</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2034</x>
+      <y>2448</y>
+      <w>144</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1008</x>
+      <y>2151</y>
+      <w>486</w>
+      <h>657</h>
+    </coordinates>
+    <panel_attributes>RtspServerController
+--
+using Codec = std::unique_ptr&lt; ICodec &gt;;
+using Codecs = std::vector&lt; Codec &gt;;
+using UsageEnvironmentUniquePtr = std::unique_ptr&lt; UsageEnvironment, std::function&lt; void( UsageEnvironment* ) &gt; &gt;;
+using RTSPServerUniquePtr = std::unique_ptr&lt; RTSPServer, std::function&lt; void( RTSPServer* ) &gt; &gt;;
+using RtspStreamContexts = std::map&lt; StreamId, RtspStreamContext &gt;;
+--
++explicit RtspServer( uint16_t serverListenPort,
+                                   size_t packetCountLimit,
+                                   IEventPublisher&lt; EventBase &gt;&amp; eventPublisher )
+/+createCameraStream( IPacketPublisher&amp; packetHandler,/
+                     const std::string&amp; streamId,
+                     const Codecs&amp; codecs,
+                     const std::string&amp; sdp ) : void
+/+deleteCameraStream( const std::string&amp; streamId ) : void/
+/+getEventHandler() : EventHandler/
+/+void start()/
+/+void stop()/
+/+bool isStarted() const/
+/+bool waitForStart( std::chrono::seconds timeout )/
+/+StreamIds getStreamIds() const/
+/+size_t getStreamQuantity() const/
+/+Status getStatus() const/
+--
+-static void createCameraStreamEvent( void* clientData )
+-static void deleteCameraStreamEvent( void* clientData )
+-void triggerCameraStreamCreating()
+-void triggerCameraStreamDeleting()
+-void deleteStream( const StreamId&amp; streamId )
+-void deleteCameraAllStream()
+--
+-m_eventPublisher : IEventPublisher&lt; EventBase &gt;&amp;
+-size_t m_packetCountLimit
+-m_taskScheduler : std::unique_ptr&lt; TaskScheduler &gt;
+-m_env : UsageEnvironmentUniquePtr
+-m_server: RTSPServerUniquePtr
+-m_createStreamTrigger : EventTrigger
+-m_deleteStreamTrigger : EventTrigger
+-m_contexts : RtspStreamContexts
+-m_startContextQueue: std::list&lt; RtspStreamContexts::iterator &gt;
+-_stopContextQueue : std::list&lt; RtspStreamContexts::iterator &gt;
+--
+Responsibilities
+-- run live RTPS streams
+-- create/delete streams from different sources
+-- detele all stream in desctructor
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>639</x>
+      <y>2079</y>
+      <w>297</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>StartRtspStreamContext
+--
++IPacketPublisher&amp; packetHandler
++IEventPublisher&lt; EventBase &gt;&amp; eventPublisher
++std::string streamId
++Codecs codecs
++std::string sdp
++size_t packetCountLimit
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>765</x>
+      <y>2610</y>
+      <w>171</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>UsageEnvironment
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>675</x>
+      <y>2700</y>
+      <w>261</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>OnDemandServerMediaSubsession
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>2628</y>
+      <w>99</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>2718</y>
+      <w>99</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>765</x>
+      <y>2781</y>
+      <w>171</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>RTSPServer
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>2790</y>
+      <w>99</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>2178</y>
+      <w>99</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1602</x>
+      <y>1548</y>
+      <w>495</w>
+      <h>333</h>
+    </coordinates>
+    <panel_attributes>/IRtspServer/
+--
+Codec = std::unique_ptr&lt; ICodec &gt;
+Codecs = std::vector&lt; Codec &gt;
+StreamId = std::string
+EventHandler = std::function&lt; void( const std::string&amp; streamId, Event ) &gt;
+--
+/+createCameraStream( IPacketPublisher&amp; packetHandler, /
+                      const std::string&amp; streamId, 
+                      const Codecs&amp; codecs, 
+                      const std::string&amp; sdp ) : void
+/+deleteCameraStream( const StreamId&amp; streamId ) : void/
+/+handle() : void/
+/+getEventHandler() : EventHandler/
+--
+Responsibilities
+-- run live RTPS streams
+-- create/delete streams from different sources
+-- run handle method in the loop
+-- tries start stream forever until stream is removed
+--
+Notes
+-- It isn't implemented because Live555 doesn't allow 
+create/delete streams in a single thread.
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1485</x>
+      <y>2466</y>
+      <w>117</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>531</x>
+      <y>1962</y>
+      <w>2268</w>
+      <h>1260</h>
+    </coordinates>
+    <panel_attributes>Live555 RTSP Server</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLHierarchy</id>
+    <coordinates>
+      <x>0</x>
+      <y>981</y>
+      <w>225</w>
+      <h>558</h>
+    </coordinates>
+    <panel_attributes>type=Package
+cameras
+	architecture
+	bindings
+	framework
+		ffmpeg
+			frame
+			packet
+	rtsp_server
+		live555
+	remote_interface
+	event
+	cloud
+	packet
+	codec
+	tests</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2124</x>
+      <y>1683</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IPacketPublisher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2088</x>
+      <y>1692</y>
+      <w>54</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1521</x>
+      <y>2187</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IPacketPublisher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1620</x>
+      <y>2214</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2376</x>
+      <y>2178</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IPacketPublisher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2430</x>
+      <y>2205</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>675</x>
+      <y>2007</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IPacketPublisher</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>729</x>
+      <y>2034</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2124</x>
+      <y>1755</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+ICodec</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2088</x>
+      <y>1764</y>
+      <w>54</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2835</x>
+      <y>954</y>
+      <w>396</w>
+      <h>153</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Thread Safe&gt;&gt;
+IPacketBuffer
+--
+/+push( Packet ) : void/
+/+waitFor( std::chrono::seconds ): bool/
+/+pop() : Packet/
+/+empty() : bool/
+/+clear() : void/
+--
+Responsibilities
+-- thread safe push/pop packets </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2340</x>
+      <y>981</y>
+      <w>396</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Thread Safe&gt;&gt;
+IPacketPublisher
+--
+using ListenerId = int64_t
+using PacketHandlerFunc 
+        = std::function&lt; void( const Packet&amp; ) &gt;
+--
+/+sendPacket( Packet ) : void/
+/+addListener( PacketHandlerFunc&amp; ) : ListenerId/
+/+removeListener( const ListenerId&amp; id ) : void/
+--
+Responsibilities
+-- thread safely get packet and send packet to listeners</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2340</x>
+      <y>1206</y>
+      <w>396</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Thread Safe&gt;&gt;
+PacketPublisher
+--
+/+sendPacket( Packet ) : void/
+/+addListener( PacketHandlerFunc&amp; ) : ListenerId/
+/+removeListener( const ListenerId&amp; id ) : void/
+--
+-m_counter : ListenerId
+-m_listeners : std::map&lt; ListenerId, PacketHandlerFunc  &gt;
+-m_mutex : std::mutex
+--
+Responsibilities
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2529</x>
+      <y>1161</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2826</x>
+      <y>1143</y>
+      <w>396</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Thread Safe&gt;&gt;
+PacketBuffer
+--
+enum class SkippingType { Keep, Remove };
+--
+explicit PacketsBuffer( size_t frameCountLimit = 0, 
+          SkippingType skippingType = SkippingType::Remove )
+/+push( Packet ) : void/
+/+pop() : Packet/
+--
+-m_frameCountLimit : size_t
+-m_queueMutex : mutable std::mutex
+-m_queue : std::queue&lt; Packet &gt;
+-m_skippingType : const SkippingType
+--
+Responsibilities
+-- Remove skipping type - removes all queue if queue is full
+-- Keep skipping type - saves queue if queue is full
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3024</x>
+      <y>1098</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2520</x>
+      <y>2178</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IPacketBuffer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2574</x>
+      <y>2205</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>855</x>
+      <y>45</y>
+      <w>504</w>
+      <h>333</h>
+    </coordinates>
+    <panel_attributes>CamerasAddon
+--
++addCameraStream( const JsonObject&amp; params ) : void
++removeCameraStream( const JsonObject&amp; params ) : void
++createLiveRtspStream( const JsonObject&amp; params ) : void
++deleteLiveRtspStream( const JsonObject&amp; params ) : void
++createStreamSavingToCloud( const JsonObject&amp; params ) : void
++deleteStreamSavingToCloud( const JsonObject&amp; params ) : void
++startStreamSavingToCloud( const JsonObject&amp; params ) : void
++stopStreamSavingToCloud( const JsonObject&amp; params ) : void
++makeStreamSnapshotForCloud( const JsonObject&amp; params ) : void
++makeStreamSnapshotForUI( const JsonObject&amp; params, 
+                          const std::string&amp; uuid, 
+                          const std::string&amp; sender ) : void
+--
+-m_rtspServer : std::unique_ptr&lt; RtspServer &gt;
+-m_cameras : std::map&lt; StreamId, Camera &gt;
+-m_pluginIds : std::map&lt; StreamId, PluginId &gt;
+-m_cloudStorageInterface : std::unique_ptr&lt; Common::CloudStorageInterface::RemoteInterface &gt;
+-m_networkRemoteInterface : std::unique_ptr&lt; Network::RemoteInterface &gt;
+-m_currentIpAddress : std::string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1476</x>
+      <y>45</y>
+      <w>630</w>
+      <h>468</h>
+    </coordinates>
+    <panel_attributes>Camera
+--
++Camera( std::string streamId,
+         std::unique_ptr&lt; IFrameworkController &gt;, 
+         std::unique_ptr&lt; IRtspServer &gt;,
+         std::unique_ptr&lt; IFileRecorderController &gt;)
++createLiveRtspStream()
++deleteLiveRtspStream();
++createStreamSavingToCloud( int segmentDurationSec,
+                                    int64_t secondsBeforeStart,
+                                    int segmentsLimit,
+                                    const std::string&amp; format,
+                                    const SaveFileCallback&amp; saveFile )
++deleteStreamSavingToCloud()
++startStreamSavingToCloud( const Json&amp; metaData, 
+                                               const SaveFileCallback&amp; saveFile )
++stopStreamSavingToCloud();
++makeSnapshotForCloud( const Json&amp; metaData,
+                               SaveFileCallback saveFile,
+                               const std::function&lt; void( const Json&amp; storageKey ) &gt;&amp; onFinished,
+                               const std::function&lt; void( const std::string&amp; errorDesc ) &gt;&amp; onError )
++makeSnapshotForUI( std::shared_ptr&lt; CameraSnapshoter::Resolution &gt; resolution,
+                            const std::function&lt; void( const Json&amp; storageKey ) &gt;&amp; response )
++std::string getLiveRtspStreamLink() const
++setLiveRtspStreamLink( const std::string&amp; link )
++std::string getStreamId() const;
+--
+Responsibilities
+-- FrameworkController lives while camera lives
+-- start stream in constructor
+-- </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1350</x>
+      <y>198</y>
+      <w>144</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1791</x>
+      <y>720</y>
+      <w>423</w>
+      <h>333</h>
+    </coordinates>
+    <panel_attributes>IFrameworkController
+--
+SeparateThreadCallback = std::function&lt; void( Message, 
+                                              const Packet&amp; ) &gt;
+--
+/+startStream() : void/
+/+stopStream() : void/
+/+isRunning() : bool/
+/+getSnapshot( Resolution&amp;, SeparateThreadCallback )/
+/+getPacketHandler() : IPacketPublisher/
+/+getEventHandler() : EventHandler/
+/+getConverterPacketHandler( ConverterId ) : IPacketPublisher/
+/+createConverter( Format ) : ConverterId/
+/+startConvertedStream( ConverterId ) : void/
+/+stopConvertedStream( ConverterId ) : void/
+--
+Responsibilities
+-- FrameworkController lives while camera lives
+-- make IFramework thread safe
+-- get packets and put it to PacketHandler in separate thread
+-- convert packets to another format in separate thread
+-- make snapshot in separate thread
+-- Events for client</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1989</x>
+      <y>1044</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2205</x>
+      <y>774</y>
+      <w>144</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2205</x>
+      <y>1080</y>
+      <w>153</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;150.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2259</x>
+      <y>261</y>
+      <w>405</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>IFileRecordController
+--
+SeparateThreadCallback = std::function&lt; void( Message, 
+                                              const std::string fileName&amp; ) &gt;
+--
+/+start( FileRecordSetting, SeparateThreadCallback ) : void/
+/+stop() : void/
+/+makeSnapshot( SeparateThreadCallback ) : void /
+/+getMessageHandler() : MessageHandler/
+--
+Responsibilities
+-- FileRecorderController lives while camera lives
+-- record stream to separate files with given duration
+-- optionally stream should be pre-recorded with given duration
+-- record file in given format</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1845</x>
+      <y>504</y>
+      <w>180</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2196</x>
+      <y>153</y>
+      <w>180</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IRtspServerController</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2097</x>
+      <y>333</y>
+      <w>180</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2097</x>
+      <y>162</y>
+      <w>117</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2475</x>
+      <y>432</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2655</x>
+      <y>306</y>
+      <w>126</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2655</x>
+      <y>324</y>
+      <w>126</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;170.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2205</x>
+      <y>648</y>
+      <w>72</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2655</x>
+      <y>369</y>
+      <w>90</w>
+      <h>369</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;80.0;80.0;390.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2484</x>
+      <y>648</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1044</x>
+      <y>1584</y>
+      <w>423</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>/IRtspServerController/
+--
+/+createCameraStream( const IPacketPublisher&amp; packetHandler, const std::string&amp; streamId, const Codecs&amp; codecs, const std::string&amp; sdp ) : void/
+/+deleteCameraStream( const StreamId&amp; streamId ) : void/
+/+getEventHandler() : EventHandler/
+/+void start()/
+/+void stop()/
+/+bool isStarted() const/
+/+bool waitForStart( std::chrono::seconds timeout )/
+/+StreamIds getStreamIds() const/
+/+size_t getStreamQuantity() const/
+/+Status getStatus() const/
+--
+Responsibilities
+-- create separate thread for RTSP server handling
+-- live time == live time of Camera class
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1845</y>
+      <w>27</w>
+      <h>324</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;340.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2124</x>
+      <y>1809</y>
+      <w>126</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+EventHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2088</x>
+      <y>1818</y>
+      <w>54</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>729</x>
+      <y>2259</y>
+      <w>207</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=.
+IEventPublisher&lt; EventBase &gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>990</x>
+      <y>1503</y>
+      <w>1323</w>
+      <h>405</h>
+    </coordinates>
+    <panel_attributes>RTSP Server Interfaces</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2898</x>
+      <y>711</y>
+      <w>432</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>template=0: EventType
+&lt;&lt;Thread Safe&gt;&gt;
+EventPublisher
+--
+/+sendPacket( EventType ) : void/
+/+addListener( EventHandler&amp; ) : ListenerId/
+/+removeListener( const ListenerId&amp; id ) : void/
+--
+-m_counter : ListenerId
+-m_listeners : std::map&lt; ListenerId, EventHandler &gt;
+-m_mutex : std::mutex
+--
+Responsibilities
+-- thread safely get event and send it to listeners</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2790</x>
+      <y>810</y>
+      <w>126</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1593</x>
+      <y>2880</y>
+      <w>495</w>
+      <h>288</h>
+    </coordinates>
+    <panel_attributes>ServerMediaSessionImpl
+--
++static  createNew( UsageEnvironment&amp; env,
+                    char const* streamName = NULL,
+                    char const* info = NULL,
+                    char const* description = NULL,
+                    Boolean isSSM = False,
+                    char const* miscSDPLines = NULL ) : ServerMediaSessionImpl
+
+--
+-ServerMediaSessionImpl( UsageEnvironment&amp; env,
+                         char const* streamName = NULL,
+                         char const* info = NULL,
+                         char const* description = NULL,
+                         Boolean isSSM = False,
+                         char const* miscSDPLines = NULL;
+
+--
+-std::string m_streamId;
+--
+Responsibilities
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1683</x>
+      <y>2781</y>
+      <w>261</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>ServerMediaSession
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1809</x>
+      <y>2835</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1485</x>
+      <y>2799</y>
+      <w>126</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1008</x>
+      <y>2880</y>
+      <w>459</w>
+      <h>243</h>
+    </coordinates>
+    <panel_attributes>EventTrigger
+--
+using TaskFunc = void( void* clientData );
+--
++EventTrigger();
++EventTrigger( const UsageEnvironment* env, TaskFunc taskFunc )
++EventTrigger( EventTrigger&amp;&amp; )
++EventTrigger( const EventTrigger&amp; ) = delete
+
++EventTrigger&amp; operator=( EventTrigger&amp;&amp; )
++const EventTriggerId&amp; getId() const
++void release()
+--
+-const UsageEnvironment* m_env;
+-EventTriggerId m_triggerId;
+--
+Responsibilities
+-- delete event trigger automatically</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>756</x>
+      <y>2961</y>
+      <w>171</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>UsageEnvironment
+--
+-- live555 library
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>918</x>
+      <y>2979</y>
+      <w>108</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1224</x>
+      <y>2799</y>
+      <w>27</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>612</x>
+      <y>2340</y>
+      <w>324</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>EventBase
+--
+enum class EventType { STREAM_CREATED,
+                       STREAM_DELETED }
+using StreamId = std::string;
+--
++EventBase( StreamId streamId, 
+           EventType type, 
+           std::string metaData = "" );
++getStreamId() const : StreamId
++getEventType() const : EventType
++getMetaData() const : std::string 
++setMetaData( const std::string&amp; data ) : void
++setMetaData( std::string&amp;&amp; data ) : void
+--
+-m_streamId : StreamId
+-m_eventType : EventType
+-m_data : std::string
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>828</x>
+      <y>2286</y>
+      <w>27</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>2268</y>
+      <w>99</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

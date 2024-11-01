@@ -1,0 +1,13 @@
+#include "cameras/version/cameras_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Cameras {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_CAMERAS_VERSION@" );
+}
+
+}  // namespace Cameras
+}  // namespace Addons
+}  // namespace HubPlatform

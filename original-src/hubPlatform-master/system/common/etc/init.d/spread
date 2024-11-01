@@ -1,0 +1,67 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=97
+SERVICE_DAEMONIZE=1
+
+BIN="spread"
+FIRMWARE_DIR="/opt/firmware"
+
+SYSTEM_CONFIG="/etc/spread.conf"
+FIRMWARE_DIR_CONFIG="$FIRMWARE_DIR/sbin/spread.conf"
+
+IN_SYSTEM="false"
+IN_FIRMWARE_DIR="false"
+
+LOG_DIR="/var/log/firmware"
+LOG_FILE="$LOG_DIR/spread.log"
+
+LOG_USER="spread"
+
+locate_binary() {
+  binary=$0
+  bin_location=$(cd $FIRMWARE_DIR && find . -type f -name "$BIN" -print0 | cut -d / -f2-)
+
+  if [ -z "$bin_location" ]; then
+    IN_FIRMWARE_DIR="false"
+  else
+    IN_FIRMWARE_DIR="true"
+    BIN="$FIRMWARE_DIR/$bin_location"
+    return
+  fi
+
+  bin_location=""
+  bin_location="$(which spread)"
+
+  if [ -z "$bin_location" ]; then 
+    IN_SYSTEM="false" 
+  else
+    IN_SYSTEM="true"
+    BIN="$bin_location"
+  fi
+}
+
+prepare_service() {
+  mkdir -p $LOG_DIR
+  chmod a+w $LOG_DIR
+  touch $LOG_FILE
+  chown $LOG_USER:$LOG_USER $LOG_FILE
+  mkdir -m 0755 -p /var/run/spread
+
+  locate_binary $BIN
+}
+
+start_service() {
+  prepare_service
+  [ "$IN_SYSTEM" = "false" ] && [ "$IN_FIRMWARE_DIR" = "false" ] && exit
+
+  [ "$IN_SYSTEM" == "true" ] && CONF_DIR="$SYSTEM_CONFIG" || CONF_DIR="$FIRMWARE_DIR"
+
+  procd_open_instance
+
+  procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-0}
+
+  procd_set_param command /bin/sh -c "$BIN -c $CONF_DIR >> $LOG_FILE"
+
+  procd_close_instance
+}

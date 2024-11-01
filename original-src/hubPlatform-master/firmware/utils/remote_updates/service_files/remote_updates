@@ -1,0 +1,19 @@
+#!/bin/sh /etc/rc.common
+
+START=97
+STOP=10
+USE_PROCD=1
+PROVIDES=remote_updates
+
+updates_root=/home/remote_updates
+
+start_service() {
+  procd_open_instance
+
+  logger -t remote_updates "Initializing remote updates"
+  mkdir -p $updates_root/files
+  procd_set_param command /bin/sh -c "$updates_root/bin/remote_updates_start.sh >> $updates_root/files/remote_updates.log 2>&1"
+
+  procd_close_instance
+}
+

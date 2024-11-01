@@ -1,0 +1,74 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=98
+SERVICE_DAEMONIZE=0
+
+# For creating addons and migration.
+FIRMWARE_DIR="/opt/firmware"
+
+FIRMWARE_DIRS="scripts bin/addons data"
+
+LOG_DIR="/var/log/firmware"
+
+INIT_DIR="/etc/init.d"
+
+disable_service() {
+  /etc/init.d/$1 stop
+  /etc/init.d/$1 disable
+}
+
+enable_service() {
+  /etc/init.d/$1 enable
+}
+
+disable_all_services(){
+    for i in "$INIT_DIR"/ha-*
+    do
+        disable_service "$(basename "$i")"
+    done
+}
+
+enable_all_services(){
+    for i in "$INIT_DIR"/ha-*
+    do
+        enable_service "$(basename "$i")"
+    done
+}
+
+init() {
+  for d in ${FIRMWARE_DIRS}; do
+    if [ "$d" = "data" ]; then
+      if [ -L "$FIRMWARE_DIR/data" ]; then
+        mkdir -p "/home/data"
+      else
+        mkdir "$FIRMWARE_DIR/data"
+      fi
+      continue
+    fi
+
+    mkdir -p "$FIRMWARE_DIR/$d"
+  done
+
+  [ ! -d "$DATA_DIR/custom_plugins" ] && mkdir -p "$DATA_DIR/custom_plugins"
+
+  [ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
+}
+
+check_factory_test() {
+  if [ -f "/home/.factorytest_required" ]; then
+    disable_all_services
+    exit
+  else
+    enable_all_services
+  fi
+}
+
+start_service() {
+  procd_open_instance
+
+  init
+  check_factory_test
+
+  procd_close_instance
+}

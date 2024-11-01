@@ -1,0 +1,21 @@
+{
+  "id": "network_dhcp",
+  "version": "1.0",
+  "type": "extension",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+    "core",
+    "network",
+    "http",
+    "timer",
+    "logging"
+  ]
+}

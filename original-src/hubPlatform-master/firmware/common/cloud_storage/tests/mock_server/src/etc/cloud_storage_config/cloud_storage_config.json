@@ -1,0 +1,116 @@
+{
+    "hostname-hidden": "0.0.0.0",
+    "port-hidden": 8010,
+    "responses": [
+        {
+            "method": "GET",
+            "path": "/ping",
+            "responseCode": 200,
+            "body": "{\"status\":1,\"complete\":1,\"data\":{\"info\":\"mock http service is ready\"}}",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                }
+            ]
+        },
+        {
+            "method": "POST",
+            "path": "/upload",
+            "responseCode": 200,
+            "body": "@file://etc/cloud_storage_config/task_external_upload.json",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                }
+            ]
+        },
+        {
+            "method": "PUT",
+            "path": "/external-upload-url",
+            "responseCode": 200,
+            "body": "",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                }
+            ]
+        },
+        {
+            "method": "POST",
+            "path": "/v1/request",
+            "responseCode": 200,
+            "body": "{\"status\": 1, \"data\": {}}\n",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                }
+            ]
+        },
+        {
+            "method": "GET",
+            "path": "/?redirect_support=1&uuid=uploaded_file_uuid",
+            "responseCode": 302,
+            "body": "{\"type\":\"redirect\"}",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                },
+                {
+                    "location": "/external-download-url?uuid=uploaded_file_uuid"
+                }
+            ]
+        },
+        {
+            "method": "GET",
+            "path": "/external-download-url?uuid=uploaded_file_uuid",
+            "responseCode": 200,
+            "body": "@file://etc/cloud_storage_config/task_download_with_redirect_answer.txt",
+            "headers": [
+                {
+                    "Content-Type": "application/json"
+                },
+                {
+                    "location": "/external-download-url?uuid=uploaded_file_uuid"
+                }
+            ]
+        },
+        {
+            "method": "POST",
+            "path": "/upload_without_redirect",
+            "responseCode": 200,
+            "headers": [
+                {
+                    "Connection": "keep-alive",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Date": "Sun, 22 Jan 2023 21:35:58 GMT",
+                    "X-Powered-By": "Express"
+                }
+            ],
+            "body": "{\"file\":{\"uuid\":\"file_upload_uuid\",\"key\":\"file_upload_key\"}}"
+        },
+        {
+            "__testCase": "downloadWithRedirect404Error, 3.2",
+            "method": "GET",
+            "path": "/download-w-redirect-404",
+            "responseCode": 404,
+            "body": "",
+            "headers": [
+                {
+                    "Content-Type": "text/plain"
+                }
+            ]
+        },
+        {
+            "__testCase": "downloadWithRedirect404Error, 3.2",
+            "method": "POST",
+            "path": "/download-wo-redirect",
+            "responseCode": 200,
+            "body": "@file://etc/cloud_storage_config/task_download_wo_redirect_answer.txt",
+            "headers": [
+                {
+                    "Content-Type": "text/plain"
+                }
+            ]
+        }
+    ]
+}

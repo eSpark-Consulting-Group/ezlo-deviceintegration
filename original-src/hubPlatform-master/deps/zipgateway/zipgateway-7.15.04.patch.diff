@@ -1,0 +1,662 @@
+diff -ruN a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	1970-01-01 03:00:00.000000000 +0300
++++ b/CMakeLists.txt	2021-07-16 18:57:03.133426909 +0300
+@@ -0,0 +1,22 @@
++cmake_minimum_required(VERSION 3.13)
++
++project(zipgateway LANGUAGES C CXX)
++
++set(ZW_NVM_CONVERTER zw_nvm_converter)
++set(ZW_NVM_CONVERTER_LIB zw_nvm_converter_api)
++set(CONTROLLERLIB_API _zw_nvm_controllerlib_api)
++set(CONTROLLERLIB_7xx _zw_nvm_controllerlib_7xx)
++set(CONTROLLERLIB_6xx _zw_nvm_controllerlib_6xx)
++set(JSON_HELPERS _zw_nvm_json_helpers)
++set(APP_UTILS _zw_nvm_app_utils)
++set(NVM3LIB _zw_nvm3lib)
++set(MAIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/usr/local)
++set(SYSTOOLS_DIR ${MAIN_DIR}/systools)
++set(ZWAVE_INCLUDE_DIR ${MAIN_DIR}/Z-Wave/include)
++
++if (WITH_ZW_NVM_CONVERTER)
++    add_subdirectory( ${SYSTOOLS_DIR}/zw_nvm_converter )
++    add_subdirectory( ${SYSTOOLS_DIR}/libs )
++endif()
++
++#TODO: build another modules optionaly
+diff -ruN a/usr/local/systools/libs/app_utils/CMakeLists.txt b/usr/local/systools/libs/app_utils/CMakeLists.txt
+--- a/usr/local/systools/libs/app_utils/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/libs/app_utils/CMakeLists.txt	2021-07-16 18:57:03.133426909 +0300
+@@ -1,10 +1,4 @@
+-add_library(app_utils user_message.c base64.c)
++add_library(${APP_UTILS} STATIC user_message.c base64.c)
+ 
+-target_include_directories(app_utils PUBLIC
+-                              "${CMAKE_CURRENT_SOURCE_DIR}"
+-                          )
++target_include_directories(${APP_UTILS} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+ 
+-if (NOT DEFINED SKIP_TESTING)
+-  message(STATUS "Adding unit test for app_utils")
+-  add_subdirectory( test )
+-endif()
+diff -ruN a/usr/local/systools/libs/json_helpers/CMakeLists.txt b/usr/local/systools/libs/json_helpers/CMakeLists.txt
+--- a/usr/local/systools/libs/json_helpers/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/libs/json_helpers/CMakeLists.txt	2021-07-16 18:57:03.133426909 +0300
+@@ -1,12 +1,9 @@
+-find_package(PkgConfig)
+-pkg_check_modules(JSON_C REQUIRED json-c)
++add_library(${JSON_HELPERS} STATIC "json_helpers.c")
+ 
+-add_library(json_helpers "json_helpers.c")
+-target_link_libraries(json_helpers app_utils)
+-
+-target_include_directories(json_helpers PUBLIC
++target_include_directories(${JSON_HELPERS} PUBLIC
+                               "${JSON_C_INCLUDE_DIRS}"
+                               "${CMAKE_CURRENT_SOURCE_DIR}"
++                              "${SYSTOOLS_DIR}/libs/app_utils"
+                           )
+ 
+-target_compile_options(json_helpers PUBLIC ${JSON_C_CFLAGS})
++
+diff -ruN a/usr/local/systools/zw_nvm_converter/CMakeLists.txt b/usr/local/systools/zw_nvm_converter/CMakeLists.txt
+--- a/usr/local/systools/zw_nvm_converter/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/CMakeLists.txt	2021-07-16 18:57:03.133426909 +0300
+@@ -1,17 +1,33 @@
+-pkg_check_modules(JSON_C REQUIRED IMPORTED_TARGET json-c)
++add_library(${CONTROLLERLIB_API} INTERFACE)
+ 
+-add_library (controllerlib_api INTERFACE)
+-target_include_directories(controllerlib_api INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include" ${JSON_C_INCLUDE_DIRS})
++set(ZW_NVM_CONVERTER_PUBLIC_HEADERS
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/nvmconv.h
++)
++
++target_include_directories(${CONTROLLERLIB_API} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include" ${JSON_C_INCLUDE_DIRS} ${ZWAVE_INCLUDE_DIR})
+ 
+ add_subdirectory( nvm3lib )
+ add_subdirectory( controllerlib_7.xx )
+ add_subdirectory( controllerlib_6.xx )
+ 
+-add_executable( zw_nvm_converter nvmconv_main.c )
+-target_link_libraries( zw_nvm_converter
+-                       controllerlib_api
+-                       controllerlib_7xx
+-                       controllerlib_6xx
++add_library( ${ZW_NVM_CONVERTER_LIB} SHARED nvmconv.c )
++
++add_executable( ${ZW_NVM_CONVERTER} nvmconv_main.c )
++
++target_link_directories(${ZW_NVM_CONVERTER_LIB} PUBLIC ${JSON_C_LINK_DIRS})
++
++target_link_libraries( ${ZW_NVM_CONVERTER_LIB}
++                    PRIVATE
++                       ${CONTROLLER_LIB_API}
++                       ${CONTROLLERLIB_7xx}
++                       ${CONTROLLERLIB_6xx}
++                    PUBLIC
++                       json-c
+                      )
+ 
+-install(TARGETS zw_nvm_converter DESTINATION bin)
++target_link_libraries( ${ZW_NVM_CONVERTER} ${ZW_NVM_CONVERTER_LIB} ${CONTROLLERLIB_API})
++
++
++install(TARGETS ${ZW_NVM_CONVERTER} DESTINATION bin)
++install(TARGETS ${ZW_NVM_CONVERTER_LIB} DESTINATION lib)
++install(FILES ${ZW_NVM_CONVERTER_PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/zw_nvm_converter)
+diff -ruN a/usr/local/systools/zw_nvm_converter/controllerlib_6.xx/CMakeLists.txt b/usr/local/systools/zw_nvm_converter/controllerlib_6.xx/CMakeLists.txt
+--- a/usr/local/systools/zw_nvm_converter/controllerlib_6.xx/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/controllerlib_6.xx/CMakeLists.txt	2021-07-16 18:57:03.133426909 +0300
+@@ -1,20 +1,14 @@
+ 
+-
+-add_library(controllerlib_6xx     
++add_library(${CONTROLLERLIB_6xx} STATIC  
+     nvm500_export.c
+     nvm500_import.c
+     nvm500_common.c
+     api_wrappers.c
+ )
+ 
+-target_link_libraries(controllerlib_6xx controllerlib_api json_helpers ${JSON_C_LDFLAGS})
++target_link_libraries(${CONTROLLERLIB_6xx} ${CONTROLLERLIB_API} ${JSON_HELPERS})
+ 
+-target_include_directories(controllerlib_6xx
+-                            PUBLIC
+-                              ${JSON_C_INCLUDE_DIRS}
++target_include_directories(${CONTROLLERLIB_6xx}
+                             PRIVATE
+-                              ${CMAKE_CURRENT_SOURCE_DIR} ${ZWAVE_INCLUDE_DIR}
++                              ${CMAKE_CURRENT_SOURCE_DIR}
+                               )
+-
+-
+-#target_include_directories( nvm500_tool PUBLIC ${JSON_C_INCLUDE_DIRS}  ${ZWAVE_INCLUDE_DIR}) 
+diff -ruN a/usr/local/systools/zw_nvm_converter/controllerlib_7.xx/CMakeLists.txt b/usr/local/systools/zw_nvm_converter/controllerlib_7.xx/CMakeLists.txt
+--- a/usr/local/systools/zw_nvm_converter/controllerlib_7.xx/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/controllerlib_7.xx/CMakeLists.txt	2021-07-16 18:57:03.137426993 +0300
+@@ -5,13 +5,11 @@
+   zwave/ZW_nodemask.c
+ )
+ 
+-add_library(controllerlib_7xx ${CONTROLLERLIB_7xx_SRC_FILES})
++add_library(${CONTROLLERLIB_7xx} STATIC ${CONTROLLERLIB_7xx_SRC_FILES})
+ 
+-target_link_libraries(controllerlib_7xx controllerlib_api json_helpers app_utils nvm3lib PkgConfig::JSON_C)
++target_link_libraries(${CONTROLLERLIB_7xx} ${CONTROLLERLIB_API} ${JSON_HELPERS} ${APP_UTILS} ${NVM3LIB} json-c)
+ 
+-target_include_directories(controllerlib_7xx
+-                            PUBLIC
+-                              ${JSON_C_INCLUDE_DIRS}
++target_include_directories(${CONTROLLERLIB_7xx}
+                             PRIVATE
+                               ${CMAKE_CURRENT_SOURCE_DIR}
+                               ${CMAKE_CURRENT_SOURCE_DIR}/zwave
+diff -ruN a/usr/local/systools/zw_nvm_converter/include/nvmconv.h b/usr/local/systools/zw_nvm_converter/include/nvmconv.h
+--- a/usr/local/systools/zw_nvm_converter/include/nvmconv.h	1970-01-01 03:00:00.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/include/nvmconv.h	2021-07-19 11:18:06.298406435 +0300
+@@ -0,0 +1,30 @@
++#ifndef _NVMCONV_H
++#define _NVMCONV_H
++
++#include <stdbool.h>
++
++#define ZW_NVM_FORMAT_STATIC_6_6 "static6.6"
++#define ZW_NVM_FORMAT_STATIC_6_7 "static6.7"
++#define ZW_NVM_FORMAT_STATIC_6_8 "static6.8"
++
++#define ZW_NVM_FORMAT_BRIDGE_6_6 "bridge6.6"
++#define ZW_NVM_FORMAT_BRIDGE_6_7 "bridge6.7"
++#define ZW_NVM_FORMAT_BRIDGE_6_8 "bridge6.8"
++
++#define ZW_NVM_FORMAT_BRIDGE_7_11 "bridge7.11"
++#define ZW_NVM_FORMAT_BRIDGE_7_12 "bridge7.12"
++#define ZW_NVM_FORMAT_BRIDGE_7_15 "bridge7.15"
++
++typedef const char* zw_nvm_format;
++
++bool zw_nvm_export(zw_nvm_format format, const char* in_file, const char* out_file, bool pretty);
++
++bool zw_nvm_import(zw_nvm_format format, const char* in_file, const char* out_file);
++
++bool zw_nvm_is_format_valid(zw_nvm_format format);
++
++void zw_nvm_set_convverter_warning_msg_level();
++
++void zw_nvm_for_each_format( void(*)(zw_nvm_format format, const char* id, void* arg), void* arg );
++
++#endif
+\ No newline at end of file
+diff -ruN a/usr/local/systools/zw_nvm_converter/nvm3lib/CMakeLists.txt b/usr/local/systools/zw_nvm_converter/nvm3lib/CMakeLists.txt
+--- a/usr/local/systools/zw_nvm_converter/nvm3lib/CMakeLists.txt	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/nvm3lib/CMakeLists.txt	2021-07-16 18:57:03.137426993 +0300
+@@ -15,13 +15,13 @@
+   "${NVM3DRV_ROOT}/src/nvm3_utils.c"
+ )
+ 
+-add_library(nvm3lib ${NVM3LIB_SRC_FILES})
++add_library(${NVM3LIB} STATIC ${NVM3LIB_SRC_FILES})
+ 
+-target_include_directories(nvm3lib PUBLIC
++target_include_directories(${NVM3LIB} PUBLIC
+                               "${EMDRV_ROOT}/common/inc"
+                               "${NVM3DRV_ROOT}/inc"
+                               "${NVM3DRV_ROOT}/config"
+-                              ../../libs/json_helpers
++                              "${SYSTOOLS_DIR}/libs/json_helpers"
+                           )
+ 
+-target_compile_definitions(nvm3lib PUBLIC NVM3_HOST_BUILD FLASH_PAGE_SIZE=2048 NVM3_DEFAULT_CACHE_SIZE=400)
++target_compile_definitions(${NVM3LIB} PUBLIC NVM3_HOST_BUILD FLASH_PAGE_SIZE=2048 NVM3_DEFAULT_CACHE_SIZE=400)
+diff -ruN a/usr/local/systools/zw_nvm_converter/nvmconv.c b/usr/local/systools/zw_nvm_converter/nvmconv.c
+--- a/usr/local/systools/zw_nvm_converter/nvmconv.c	1970-01-01 03:00:00.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/nvmconv.c	2021-07-16 18:57:03.137426993 +0300
+@@ -0,0 +1,205 @@
++#include "nvmconv.h"
++
++#include <stdio.h>
++#include <string.h>
++
++#include <user_message.h>
++#include "controllerlib_api.h"
++
++static nvmlib_interface_t *known_converters[] = {
++  &controllerlib715,
++  &controllerlib712,
++  &controllerlib711,
++  &controllerlib68b,
++  &controllerlib67b,
++  &controllerlib66b,
++  &controllerlib68s,
++  &controllerlib67s,
++  &controllerlib66s,
++};
++
++static nvmlib_interface_t* get_interface_by_format(zw_nvm_format format) {
++  for(int i = 0; i < sizeof(known_converters) / sizeof(nvmlib_interface_t*); ++i) {
++    if (strcmp(format, known_converters[i]->nvm_desc ) == 0) {
++      return known_converters[i];
++    }
++  }
++  return 0;
++}
++
++
++/*****************************************************************************/
++static size_t load_file_to_buf(const char* fname, uint8_t **buf)
++{
++  size_t file_size = 0;
++  uint8_t *file_buf = NULL;
++  size_t items_read = 0;
++
++  FILE *fp = fopen(fname, "rb");
++
++  if (NULL != fp)
++  {
++    // Get file size to allocate enough memory
++    if (fseek(fp, 0, SEEK_END) == 0)
++    {
++      file_size = ftell(fp);
++    }
++
++    if (file_size > 0)
++    {
++      rewind(fp);
++      file_buf = malloc(file_size);
++      if (NULL != file_buf)
++      {
++        // Here one "item" is a block of "file_size" bytes, i.e. the whole file
++        items_read = fread(file_buf, file_size, 1, fp);
++      }
++    }
++    fclose(fp);
++  }
++
++  if (items_read > 0)
++  {
++    *buf = file_buf;
++    return file_size;
++  }
++  return 0;
++}
++
++
++bool zw_nvm_export(zw_nvm_format format, const char* in_file, const char* out_file, bool pretty)  {
++  nvmlib_interface_t* nvm_if = 0;
++
++  nvm_if = get_interface_by_format(format);
++
++  if (!nvm_if) {
++    printf("invalid interface name = %s\n", format);
++    return false;
++  }
++
++  /* IMPORT: Convert JSON to BIN */
++
++  bool result = false;
++
++  /* EXPORT: Convert BIN to JSON */
++
++  uint8_t *nvm_buf  = NULL;
++  size_t   nvm_size = 0;
++
++  nvm_size = load_file_to_buf(in_file, &nvm_buf);
++
++  if (nvm_size > 0)
++  {
++    nvm_if->init();
++    if (nvm_if->is_nvm_valid(nvm_buf, nvm_size))
++    {
++      json_object *jo;
++
++      printf("Bin image identified as: %s\n", nvm_if->nvm_desc);
++      printf("Using converter: %s\n", nvm_if->lib_id);
++
++      if (nvm_if->nvm_to_json(nvm_buf, nvm_size, &jo))
++      {
++//          printf("---------------\nGenerated JSON:\n%s\n", json_object_to_json_string_ext(jo, JSON_C_TO_STRING_PRETTY));
++        printf("Saving JSON to %s...\n", out_file);
++
++        if (json_object_to_file_ext(out_file, jo, pretty ? JSON_C_TO_STRING_PRETTY : JSON_C_TO_STRING_PLAIN) == -1)
++        {
++          // json_util_get_last_err() unavailable before json-c 0.13
++          // Instead json-c prints directly to stderr 
++          // printf("ERROR: %s\n", json_util_get_last_err());
++        }
++        else 
++        {
++          result = true;
++        }
++      }
++      else
++      {
++        printf("Failed to convert nvm to json.\n");
++      }
++    }
++    nvm_if->term();
++  }
++  free(nvm_buf);
++
++  return result;
++}
++
++bool zw_nvm_import(zw_nvm_format format, const char* in_file, const char* out_file)  {
++  nvmlib_interface_t* nvm_if = 0;
++
++  nvm_if = get_interface_by_format(format);
++
++  if (!nvm_if) {
++    printf("invalid interface name = %s\n", format);
++    return false;
++  }
++
++  /* IMPORT: Convert JSON to BIN */
++
++  bool result = false;
++
++  json_object *jo = json_object_from_file(in_file);
++  if (jo)
++  {
++    nvm_if->init();
++    if (nvm_if->is_json_valid(jo))
++    {
++      uint8_t *nvm_buf  = NULL;
++      size_t   nvm_size = 0;
++      nvm_if->json_to_nvm(jo, &nvm_buf, &nvm_size);
++      if (nvm_size > 0)
++      {
++        printf("got nvm buffer size = %zu\n", nvm_size);
++        printf("Saving NVM image to %s...\n", out_file);
++        FILE *fp = fopen(out_file, "wb");
++        if (fp)
++        {
++          size_t items_written = fwrite(nvm_buf, nvm_size, 1, fp);
++          if (items_written != 1)
++          {
++            printf("ERROR %d writing to file %s\n", ferror(fp), out_file);
++          }
++          else 
++          {
++            result = true;
++          }
++          fclose(fp);
++        }
++        else
++        {
++          printf("ERROR creating file %s\n", out_file);
++        }
++
++        free(nvm_buf);
++      }
++      else
++      {
++        printf("ERROR: Invalid JSON\n");
++      }
++      
++    }
++    else
++    {
++      printf("ERROR: Invalid JSON\n");
++    }
++    nvm_if->term();
++  }
++
++  return result;
++}
++
++bool zw_nvm_is_format_valid(zw_nvm_format format) {
++  return get_interface_by_format(format) != NULL;
++}
++
++void zw_nvm_set_convverter_warning_msg_level() {
++  set_message_level(MSG_WARNING);
++}
++
++void zw_nvm_for_each_format( void(*f)(zw_nvm_format format, const char* id, void* arg), void* arg ) {
++  for(int i =0 ; i < sizeof(known_converters) / sizeof(nvmlib_interface_t*); ++i) {
++    f(known_converters[i]->nvm_desc, known_converters[i]->lib_id, arg );
++  }
++}
+\ No newline at end of file
+diff -ruN a/usr/local/systools/zw_nvm_converter/nvmconv_main.c b/usr/local/systools/zw_nvm_converter/nvmconv_main.c
+--- a/usr/local/systools/zw_nvm_converter/nvmconv_main.c	2021-03-29 17:32:18.000000000 +0300
++++ b/usr/local/systools/zw_nvm_converter/nvmconv_main.c	2021-07-16 18:59:13.888168006 +0300
+@@ -1,62 +1,18 @@
+ /* © 2019 Silicon Laboratories Inc. */
+ #include <stdio.h>
+-#include <string.h>
+ #include <getopt.h>
+-#include <user_message.h>
++
+ #include "controllerlib_api.h"
+ 
+-nvmlib_interface_t *known_converters[] = {
+-  &controllerlib715,
+-  &controllerlib712,
+-  &controllerlib711,
+-  &controllerlib68b,
+-  &controllerlib67b,
+-  &controllerlib66b,
+-  &controllerlib68s,
+-  &controllerlib67s,
+-  &controllerlib66s,
+-};
++#include "nvmconv.h"
+ 
+-/*****************************************************************************/
+-static size_t load_file_to_buf(const char* fname, uint8_t **buf)
+-{
+-  size_t file_size = 0;
+-  uint8_t *file_buf = NULL;
+-  size_t items_read = 0;
+ 
+-  FILE *fp = fopen(fname, "rb");
+-
+-  if (NULL != fp)
+-  {
+-    // Get file size to allocate enough memory
+-    if (fseek(fp, 0, SEEK_END) == 0)
+-    {
+-      file_size = ftell(fp);
+-    }
+-
+-    if (file_size > 0)
+-    {
+-      rewind(fp);
+-      file_buf = malloc(file_size);
+-      if (NULL != file_buf)
+-      {
+-        // Here one "item" is a block of "file_size" bytes, i.e. the whole file
+-        items_read = fread(file_buf, file_size, 1, fp);
+-      }
+-    }
+-    fclose(fp);
+-  }
+-
+-  if (items_read > 0)
+-  {
+-    *buf = file_buf;
+-    return file_size;
+-  }
+-  return 0;
++/*****************************************************************************/
++static void print_interface_format(const char* name, const char* id, void* arg) {
++  printf("\t%s : %s\n", name, id );
+ }
+ 
+-/*****************************************************************************/
+-static int print_usage(const char* cmd) {
++static void print_usage(const char* cmd) {
+   printf(
+       "Usage: %s [-i <format_name>|-e <format_name> ] <src> <dst>\n"
+       "\t-e Export mode, produce a JSON file from an NVM file.\n"
+@@ -64,151 +20,44 @@
+       , cmd);
+ 
+   printf("supported formats are:\n\n");
+-  for(int i=0; i < sizeof(known_converters) / sizeof(nvmlib_interface_t*); i++) {
+-    printf("\t%s : %s\n",known_converters[i]->nvm_desc,known_converters[i]->lib_id  );
+-  }
+ 
+-  return 1;
++  zw_nvm_for_each_format(print_interface_format, NULL);
+ }
+ 
+ 
+-
+-static nvmlib_interface_t* get_interface_by_name(const char* name) {
+-  for(int i=0; i < sizeof(known_converters) / sizeof(nvmlib_interface_t*); i++) {
+-    if(strcmp(name, known_converters[i]->nvm_desc ) == 0) {
+-      return known_converters[i];
+-    }
+-  }
+-  return 0;
+-}
+-
+ /*****************************************************************************/
+ int main(int argc, char ** argv)
+ {
+   bool import;
+   int ch;
+-  nvmlib_interface_t* nvm_if =0;
+ 
+-  set_message_level(MSG_WARNING);
++  zw_nvm_set_convverter_warning_msg_level();
+ 
+   while ((ch = getopt(argc, argv, "i:e:")) != -1)
+   {
+-    switch (ch)
+-    {
+-    case 'i':
++    if ( ch == 'i' ) {
+       import = true;
+-      nvm_if = get_interface_by_name(optarg);
+       break;
+-    case 'e':
++    }
++    else if ( ch == 'e' ) {
+       import = false;
+-      nvm_if = get_interface_by_name(optarg);
+-      break;
+-    default:
+-      return print_usage(argv[0]);
+       break;
+     }
++    else {
++      print_usage(argv[0]);
++      return 1;
++    }
+   }
+ 
+-  if (((argc - optind) != 2) || nvm_if == 0) {
+-      return print_usage(argv[0]);
++  if (((argc - optind) != 2) || !zw_nvm_is_format_valid(optarg)) {
++      print_usage(argv[0]);
++      return 1;
+   }
+ 
+-  char *in_file  = argv[optind];
+-  char *out_file = argv[optind + 1];
+-
+-  if (false == import)
+-  {
+-    /* EXPORT: Convert BIN to JSON */
+-
+-    uint8_t *nvm_buf  = NULL;
+-    size_t   nvm_size = 0;
++  const char *in_file  = argv[optind];
++  const char *out_file = argv[optind + 1];
+ 
+-    nvm_size = load_file_to_buf(in_file, &nvm_buf);
+-
+-    if (nvm_size > 0)
+-    {
+-      nvm_if->init();
+-      if (nvm_if->is_nvm_valid(nvm_buf, nvm_size))
+-      {
+-        json_object *jo;
+-
+-        printf("Bin image identified as: %s\n", nvm_if->nvm_desc);
+-        printf("Using converter: %s\n", nvm_if->lib_id);
+-
+-        if (nvm_if->nvm_to_json(nvm_buf, nvm_size, &jo))
+-        {
+-//          printf("---------------\nGenerated JSON:\n%s\n", json_object_to_json_string_ext(jo, JSON_C_TO_STRING_PRETTY));
+-          printf("Saving JSON to %s...\n", out_file);
+-
+-          if (json_object_to_file_ext(out_file, jo, JSON_C_TO_STRING_PRETTY) == -1)
+-          {
+-            // json_util_get_last_err() unavailable before json-c 0.13
+-            // Instead json-c prints directly to stderr 
+-            // printf("ERROR: %s\n", json_util_get_last_err());
+-          }
+-        }
+-        else
+-        {
+-          printf("Failed to convert nvm to json.\n");
+-        }
+-      }
+-      nvm_if->term();
+-    }
+-    free(nvm_buf);
+-  }
+-  else
+-  {
+-    /* IMPORT: Convert JSON to BIN */
+-
+-    json_object *jo = json_object_from_file(in_file);
+-    if (jo)
+-    {
+-      nvm_if->init();
+-      if (nvm_if->is_json_valid(jo))
+-      {
+-        uint8_t *nvm_buf  = NULL;
+-        size_t   nvm_size = 0;
+-        nvm_if->json_to_nvm(jo, &nvm_buf, &nvm_size);
+-        if (nvm_size > 0)
+-        {
+-          printf("got nvm buffer size = %zu\n", nvm_size);
+-          printf("Saving NVM image to %s...\n", out_file);
+-          FILE *fp = fopen(out_file, "wb");
+-          if (fp)
+-          {
+-            size_t items_written = fwrite(nvm_buf, nvm_size, 1, fp);
+-            if (items_written != 1)
+-            {
+-              printf("ERROR %d writing to file %s\n", ferror(fp), out_file);
+-            }
+-            fclose(fp);
+-          }
+-          else
+-          {
+-            printf("ERROR creating file %s\n", out_file);
+-          }
+-
+-          free(nvm_buf);
+-        }
+-        else
+-        {
+-          printf("ERROR: Invalid JSON\n");
+-        }
+-        
+-      }
+-      else
+-      {
+-        printf("ERROR: Invalid JSON\n");
+-      }
+-      nvm_if->term();
+-    }
+-    else
+-    {
+-      // json_util_get_last_err() unavailable before json-c 0.13
+-      // Instead json-c prints directly to stderr 
+-      // printf("ERROR: %s\n", json_util_get_last_err());
+-    }
+-  }
++  const bool result = import ? zw_nvm_import(optarg, in_file, out_file) : zw_nvm_export(optarg, in_file, out_file, true);
+ 
+-  return 0;
++  return result ? 0 : 1;
+ }

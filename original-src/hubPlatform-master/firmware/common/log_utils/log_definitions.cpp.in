@@ -1,0 +1,7 @@
+// Note: log_definitions.cpp is generated automatically from log_definitions.cpp.in. Don't modify it.
+
+namespace ezlo {
+
+const char* LoggerPath = "@LOG_DIR@/";
+
+}  // namespace ezlo

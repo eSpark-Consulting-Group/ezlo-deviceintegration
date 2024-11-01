@@ -1,0 +1,13 @@
+#include "zigbee/version/zigbee_addon_version.h"
+
+namespace HubPlatform {
+namespace Addons {
+namespace Zigbee {
+
+CommonUtils::AddonVersion getVersion() {
+    return CommonUtils::AddonVersion( "@FIRMWARE_ADDONS_ZIGBEE_VERSION@" );
+}
+
+}  // namespace Zigbee
+}  // namespace Addons
+}  // namespace HubPlatform

@@ -1,0 +1,55 @@
+Flashing Ezlo firmware. Instructions.
+
+Before you install serial numbers to Ezlo(s) you need to flash firmware.
+Ensure that you have:
+
+- Ezlo board(s)
+- Good-quality micro-USB cable
+- A PC with Ubuntu Linux 14+ or Windows 7+ and availible USB port
+- A firmware image for Ezlo (~2GB .img file)
+
+1. Install software to your PC.
+If you are using Ubuntu Linux, you can use LiveSuit v3.06. To install LiveSuit, you can download an archive from http://dl.cubieboard.org/software/tools/livesuit/
+E.g. use http://dl.cubieboard.org/software/tools/livesuit/LiveSuitV306_For_Linux64.zip for 64-bit Linux.
+	Extract the files from archive, set execute for LivrSuit.run file, then run is as Super User:
+
+		> cd /path/to/LiveSuit_For_Linux64
+		> chmod +x LiveSuit.run 
+		> sudo ./LiveSuit.run 
+
+	You will see the installation result:
+
+		DKMS: install completed.
+		 
+		========***********LiveSuit installed completely***********===========
+		LiveSuit has been installed in /home/YourUser/Bin/LiveSuit
+		========***********LiveSuit installed completely***********===========
+
+	Then you will be able to run it from command line:
+
+		> sudo /home/YourUser/Bin/LiveSuit/LiveSuit.sh
+
+	where YourUser is your username.
+If you have problems with installation, you can try installing LiveSuit according to alternative instructions: http://linux-sunxi.org/LiveSuit
+
+For Windows 7+, you can use PhoenixSuit. You can download it from http://dl.cubieboard.org/software/tools/livesuit/ or http://goo.gl/PWUwv
+
+2. Start LiveSuit or PhoenixSuit application on your PC.
+3. Open file of an image ("IMAGE" buton).
+4. Put Ezlo into programming mode: push and hold down the small button "Uboot SW3" on Ezlo board.
+5. Connect Ezlo(CN2 Micro-USB) and PC. Connect directly to USB port. Do not use USB-hubs. Do not use USB-range-extenders.
+6. Wait for "Format the partition when upgrade?". Release "Uboot" button on Ezlo and click "Yes" in LiveSuit. If you are using PhoenixSuit this message can differ. Note that you need to format the partition before upgrade firmware.
+8. Wait until 100% of progress is completed (~10 minutes). If you have timeout error on this step, try disabling xHCI in the BIOS of your PC (the option varies from board to board).
+9. Unplug Ezlo from a PC.
+10. Assebmle Ezlo device, plug DC power unit.
+12. Power on the Ezlo.
+13. Wait until fist boot init is completed (~10 minutes). The first boot procedure includes device testing and visual alerting:
+    a) Emotion led changes GREEN -> RED -> BLUE -> WHITE (you can evaluate RGB channels and color ballance);
+    b) WiFi led on (blue);
+    c) Ready led on (yellow);
+    d) Error led on (red);
+    e) Message led on (blue);
+    f) Include/Exclude led on (red/green);
+    g) WiFi led, Ready led, Error led, Message led, Include/Exclude led off;
+    h) Emotion led periodic effect of 3 short green, 1 long orange (~5 minutes). At this step Ezlo extracts recovery partition.
+14. If first boot is performed propertly Ezlo restarts then and gets ready for serial number installation. In case of an error the Error led turn on. In case of Z-Wave stick error/missing  Error and Exclude leds turn ON.

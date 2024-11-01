@@ -1,0 +1,71 @@
+{
+  "family": "rawsock",
+  "files": {
+    "rawsock.dhcp-discovery.packet": {
+      "command": "discovery",
+      "response": {
+        "client_address": "50:3e:aa:89:09:16",
+        "destination_address": "ff:ff:ff:ff:ff:ff",
+        "ip_destination": "255.255.255.255",
+        "ip_source": "0.0.0.0",
+        "params": {
+          "hostname": "alexey-B250M-DS3H"
+        }
+      }
+    },
+    "rawsock.dhcp-request.packet": {
+      "command": "request",
+      "response": {
+        "client_address": "50:3e:aa:89:09:16",
+        "destination_address": "ff:ff:ff:ff:ff:ff",
+        "ip_destination": "255.255.255.255",
+        "ip_source": "0.0.0.0",
+        "params": {
+          "gateway": "",
+          "hostname": "alexey-B250M-DS3H",
+          "ip": "192.168.43.170"
+        }
+      }
+    },
+    "rawsock.dhcp-offer.packet": {
+      "command": "offer",
+      "response": {
+        "client_address": "90:78:b2:a5:88:93",
+        "destination_address": "50:3e:aa:89:09:16",
+        "ip_destination": "192.168.43.170",
+        "ip_source": "192.168.43.1",
+        "params": {
+          "dhcp": "",
+          "dns": [
+            "192.168.43.1"
+          ],
+          "domain_name": "",
+          "gateway": "192.168.43.1",
+          "ip": "192.168.43.170",
+          "lease_time": 3600,
+          "mask": "255.255.255.0"
+        }
+      }
+    },
+    "rawsock.dhcp-ack.packet": {
+      "command": "ack",
+      "response": {
+        "client_address": "90:78:b2:a5:88:93",
+        "destination_address": "50:3e:aa:89:09:16",
+        "ip_destination": "192.168.43.170",
+        "ip_source": "192.168.43.1",
+        "params": {
+          "dhcp": "",
+          "dns": [
+            "192.168.43.1"
+          ],
+          "domain_name": "",
+          "gateway": "192.168.43.1",
+          "ip": "192.168.43.170",
+          "lease_time": 3600,
+          "mask": "255.255.255.0"
+        }
+      }
+    }
+  }
+}

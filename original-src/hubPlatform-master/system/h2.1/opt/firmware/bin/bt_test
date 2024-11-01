@@ -1,0 +1,367 @@
+#!/bin/sh
+
+wifi down > /dev/null 2>&1
+
+set -e
+
+if [ $# -lt 1 ]; then
+  echo "NAME"
+  echo "    bt_test"
+  echo ""
+  echo "SYNOPSIS"
+  echo "    bt_test [--hopping | --frequency frequency | --channel channel] [--payload payload] [--logical_channel value] [--packet_type type] [--packet_length length] [--power power]"
+  echo "    bt_test [-h | -f frequency | -c channel] [-p payload] [-C value] [-t type] [-l length] [-P power]"
+  echo "    bt_test --stop"
+  echo "    bt_test -s"
+  echo ""
+  echo "DESCRIPTION"
+  echo "    Utility to control parameters of Bluetooth module"
+  echo ""
+  echo "OPTIONS"
+  echo "    -h, --hopping"
+  echo "        Set hopping mode"
+  echo "        Default: disabled (single frequency)"
+  echo "        Example: --hopping"
+  echo ""
+  echo "    -f, --frequency frequency"
+  echo "        Set radio frequency (2402 - 2480)"
+  echo "        Default: 2402"
+  echo "        Example: --frequency 2441"
+  echo ""
+  echo "    -c, --channel channel"
+  echo "        Set radio channel (0-78)"
+  echo "        Default: 0"
+  echo "        Example: --channel 39"
+  echo ""
+  echo "    -p, --payload payload"
+  echo "        Set payload"
+  echo "        Possible values: 00000000, 11111111, 01010101, 11110000, PRBS9"
+  echo "        Default: PRBS9"
+  echo "        Example: --payload 11110000"
+  echo ""
+  echo "    -C, --logical_channel value"
+  echo "        Set logical channel (if not specified, corresponding to packet type is selected)"
+  echo "        Possible values: ACL+EDR, ACL, eSCO+EDR, eSCO, SCO"
+  echo "        Default: ACL"
+  echo "        Example: --logical_channel eSCO+EDR"
+  echo ""
+  echo "    -t, --packet_type type"
+  echo "        Set packet type"
+  echo "        Possible values: NULL, POLL, FHS, DM1, DH1, 2-DH1, HV1, HV2, 2-EV3, HV3, EV3, 3-EV3, DV, 3-DH1, AUX1, PS, DM3, 2-DH3, DH3, 3-DH3, EV4, 2-EV5, EV5, 3-EV5, DM5, 2-DH5, DH5, 3-DH5"
+  echo "        Default: 2-DH1"
+  echo "        Example: --packet_type DH5"
+  echo ""
+  echo "    -l, --packet_length length"
+  echo "        Set length of the payload in the Tx packets (up to 65535)"
+  echo "        Default: 10000"
+  echo "        Example: --packet_length 20000"
+  echo ""
+  echo "    -P, --power power"
+  echo "        Set power"
+  echo "        Default: 20"
+  echo "        Example: --power 9"
+  echo ""
+  echo "    -s, --stop"
+  echo "        Stop testing"
+
+  exit 1
+fi
+
+HOPPING_VALUE=disabled
+FREQUENCY_VALUE=2402
+CHANNEL_VALUE=0
+PAYLOAD_VALUE=PRBS9
+LOGICAL_VALUE=
+TYPE_VALUE=
+LENGTH_VALUE=10000
+POWER_VALUE=20
+
+while [ $# -gt 0 ]
+do
+  case $1 in
+  -h | --hopping)
+    HOPPING_VALUE=enabled
+    ;;
+  -f | --frequency)
+    FREQUENCY_VALUE="$2"
+    CHANNEL_VALUE=$(($2-2402))
+    shift
+    ;;
+  -c | --channel)
+    FREQUENCY_VALUE=$(($2+2402))
+    CHANNEL_VALUE="$2"
+    shift
+    ;;
+  -p | --payload)
+    PAYLOAD_VALUE="$2"
+    shift
+    ;;
+  -C | --logical_channel)
+    LOGICAL_VALUE="$2"
+    shift
+    ;;
+  -t | --packet_type)
+    TYPE_VALUE="$2"
+    shift
+    ;;
+  -l | --packet_length)
+    LENGTH_VALUE="$2"
+    shift
+    ;;
+  -P | --power)
+    POWER_VALUE="$2"
+    shift
+    ;;
+  -s | --stop)
+    STOP=1
+    ;;
+  *) # unknown option
+    echo "$1 is not a valid option"
+    exit 1
+    ;;
+  esac
+  shift
+done
+
+case $TYPE_VALUE in
+2DH1)
+  TYPE_VALUE=2-DH1
+  ;;
+2EV3)
+  TYPE_VALUE=2-EV3
+  ;;
+3EV3)
+  TYPE_VALUE=3-EV3
+  ;;
+3DH1)
+  TYPE_VALUE=3-DH1
+  ;;
+2DH3)
+  TYPE_VALUE=2-DH3
+  ;;
+3DH3)
+  TYPE_VALUE=3-DH3
+  ;;
+2EV5)
+  TYPE_VALUE=2-EV5
+  ;;
+3EV5)
+  TYPE_VALUE=3-EV5
+  ;;
+2DH5)
+  TYPE_VALUE=2-DH5
+  ;;
+3DH5)
+  TYPE_VALUE=3-DH5
+  ;;
+esac
+
+if [ -z "${LOGICAL_VALUE}" ]; then
+  case $TYPE_VALUE in
+  NULL | POLL | FHS)
+    LOGICAL_VALUE=ACL # or SCO
+    ;;
+  DM1 | DM3 | DM5)
+    LOGICAL_VALUE=ACL
+    ;;
+  DH1 | DH3 | DH5)
+    LOGICAL_VALUE=ACL
+    ;;
+  HV1 | HV2 | HV3)
+    LOGICAL_VALUE=SCO
+    ;;
+  DV)
+    LOGICAL_VALUE=SCO
+    ;;
+  AUX1 | PS)
+    LOGICAL_VALUE=ACL
+    ;;
+  2-EV3 | 2-EV5)
+    LOGICAL_VALUE=eSCO
+    ;;
+  2-DH1 | 2-DH3 | 2-DH5)
+    LOGICAL_VALUE=ACL+EDR
+    ;;
+  3-EV3 | 3-EV5)
+    LOGICAL_VALUE=eSCO
+    ;;
+  3-DH1 | 3-DH3 | 3-DH5)
+    LOGICAL_VALUE=ACL+EDR
+    ;;
+  EV3 | EV4 | EV5)
+    LOGICAL_VALUE=eSCO
+    ;;
+  esac
+fi
+
+MAC="66 55 44 33 22 11" # C
+
+if [ "$HOPPING_VALUE" = "enabled" ]; then
+  HOPPING="00" # D
+else
+  HOPPING="01" # D
+fi
+
+if [ -n "$CHANNEL_VALUE" ]; then
+  CHANNEL="$(printf '%.2X' "$CHANNEL_VALUE")" # E
+else
+  CHANNEL="00" # E
+fi
+
+
+case $PAYLOAD_VALUE in
+00000000)
+  PAYLOAD="01" # F
+  ;;
+11111111)
+  PAYLOAD="02" # F
+  ;;
+01010101)
+  PAYLOAD="03" # F
+  ;;
+11110000)
+  PAYLOAD="09" # F
+  ;;
+PRBS9)
+  PAYLOAD="04" # F
+  ;;
+*) # unknown option
+  echo "$PAYLOAD_VALUE is not a valid payload value"
+  exit 1
+  ;;
+esac
+
+if [ -z "${LOGICAL_VALUE}" ] && [ -z "${TYPE_VALUE}" ]; then
+  LOGICAL_VALUE=ACL
+  TYPE_VALUE=DH1
+fi
+
+case $LOGICAL_VALUE in
+ACL+EDR)
+  LOGICAL_CHANNEL="00" # G
+  if [ -z "${TYPE_VALUE}" ]; then
+    TYPE_VALUE=2-DH1
+  fi
+  ;;
+ACL)
+  LOGICAL_CHANNEL="01" # G
+  if [ -z "${TYPE_VALUE}" ]; then
+    TYPE_VALUE=DH1
+  fi
+  ;;
+eSCO+EDR)
+  LOGICAL_CHANNEL="02" # G
+  if [ -z "${TYPE_VALUE}" ]; then
+    TYPE_VALUE=3-EV3
+  fi
+  ;;
+eSCO)
+  LOGICAL_CHANNEL="03" # G
+  if [ -z "${TYPE_VALUE}" ]; then
+    TYPE_VALUE=2-EV3
+  fi
+  ;;
+SCO)
+  LOGICAL_CHANNEL="04" # G
+  if [ -z "${TYPE_VALUE}" ]; then
+    TYPE_VALUE=HV1
+  fi
+  ;;
+*) # unknown option
+  echo "$LOGICAL_VALUE is not a valid logical channel"
+  exit 1
+  ;;
+esac
+
+case $TYPE_VALUE in
+NULL)
+  PACKET_TYPE="00" # F
+  ;;
+POLL)
+  PACKET_TYPE="01" # F
+  ;;
+FHS)
+  PACKET_TYPE="02" # F
+  ;;
+DM1)
+  PACKET_TYPE="03" # F
+  ;;
+DH1 | 2-DH1)
+  PACKET_TYPE="04" # F
+  ;;
+HV1)
+  PACKET_TYPE="05" # F
+  ;;
+HV2 | 2-EV3)
+  PACKET_TYPE="06" # F
+  ;;
+HV3 | EV3 | 3-EV3)
+  PACKET_TYPE="07" # F
+  ;;
+DV | 3-DH1)
+  PACKET_TYPE="08" # F
+  ;;
+AUX1 | PS)
+  PACKET_TYPE="09" # F
+  ;;
+DM3 | 2-DH3)
+  PACKET_TYPE="0A" # F
+  ;;
+DH3 | 3-DH3)
+  PACKET_TYPE="0B" # F
+  ;;
+EV4 | 2-EV5)
+  PACKET_TYPE="0C" # F
+  ;;
+EV5 | 3-EV5)
+  PACKET_TYPE="0D" # F
+  ;;
+DM5 | 2-DH5)
+  PACKET_TYPE="0E" # F
+  ;;
+DH5 | 3-DH5)
+  PACKET_TYPE="0F" # F
+  ;;
+*) # unknown option
+  echo "$TYPE_VALUE is not a valid packet type value"
+  exit 1
+  ;;
+esac
+
+PACKET_LEN="$(printf '%.2X %.2X' $(($LENGTH_VALUE & 0xFF)) $(($LENGTH_VALUE >> 8)))" # I
+
+POWER="$(printf '%.2X' "$POWER_VALUE")" # j
+
+ehcitool () {
+  echo "hcitool $*"
+  hcitool "$@" > /dev/null
+}
+
+if [ -n "$STOP" ]; then
+  ehcitool cmd 0x03 0x0003
+  echo ""
+  echo "# STOPPED"
+  exit 0;
+fi
+
+echo "# Hopping         = ${HOPPING_VALUE}"
+echo "# Channel         = ${CHANNEL_VALUE:-n/a}"
+echo "# Frequency       = ${FREQUENCY_VALUE:-n/a}"
+echo "# Payload         = ${PAYLOAD_VALUE}"
+echo "# Logical channel = ${LOGICAL_VALUE}"
+echo "# Packet type     = ${TYPE_VALUE}"
+echo "# Packet length   = ${LENGTH_VALUE}"
+echo "# Power           = ${POWER_VALUE}"
+echo ""
+
+ehcitool cmd 0x03 0x0003
+ehcitool cmd 0x03 0x1a 0x03
+ehcitool cmd 0x03 0x05 0x02 0x00 0x02
+ehcitool cmd 0x06 0x03
+
+ehcitool cmd 0x03 0x0003
+echo "#                      |MAC              |HO|CH|PL|LC|PT|LEN  |PW|     "
+ehcitool cmd 0x3f 0x0051 ${MAC} ${HOPPING} ${CHANNEL} ${PAYLOAD} ${LOGICAL_CHANNEL} ${PACKET_TYPE} ${PACKET_LEN} ${POWER} 00 00
+
+echo ""
+echo "# STARTED"

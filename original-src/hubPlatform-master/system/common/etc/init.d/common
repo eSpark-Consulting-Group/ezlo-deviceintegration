@@ -1,0 +1,73 @@
+FIRMWARE_DIR="/opt/firmware"
+LOG_DIR="/var/log/firmware"
+OPTIONS="--logs=$LOG_DIR"
+
+MIN_PERC_MEM=10
+MAX_PERC_MEM=50
+UNIT_CONST=1024
+
+RESPAWN_PARAMS="${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-0}"
+
+locate_firmware() {
+  firmware=$1
+  firmware_location=$(cd $FIRMWARE_DIR && find . -type f -name "$firmware" -print0 | cut -d / -f2-)
+  echo "$firmware_location"
+}
+
+string_contains() {
+  string="$( echo "$2" | tr [A-Z] [a-z])"
+  contains="$( echo "$1" | tr [A-Z] [a-z])"
+
+  case ${string} in *${contains}* ) return 0;; *) return 1;; esac;
+}
+
+calculate_cgroup_memory() {
+  local config_mem_val=$(jsonfilter -i /opt/firmware/etc/cameras.cfg -e "@.local_storage.cgroup_size")
+  local mem_value=0
+
+  # I don't know why but when the variable "${FIRMWARE_DIR} used here command clears variable
+  # and other firmwares can not find with locate_firmware()"
+  local firmware_dir_size=$(du -cLs "/opt/firmware" | grep [t]otal | awk '{print $1}')
+  local mem_total=$(($(cat /proc/meminfo | grep "MemTotal" | awk '{print $2}') * UNIT_CONST))
+
+  if string_contains "MB" $config_mem_val; then
+    mem_val=$(echo ${config_mem_val} | tr -d -c 0-9)
+    mem_val=$((mem_val * UNIT_CONST * UNIT_CONST))
+  elif string_contains "%" $config_mem_val; then
+    perc=$(echo ${config_mem_val} | tr -d -c 0-9)
+    if [ ${perc} -lt ${MIN_PERC_MEM} ] || [ ${perc} -gt ${MAX_PERC_MEM} ]; then
+      # Out of range, use max for allocation
+      perc=${MAX_PERC_MEM}
+    fi
+    mem_val=$(( ((mem_total - firmware_dir_size) * perc) / 100 ))
+  else
+    # In this case config value could not read correctly. Use max.
+    mem_val=$(( ((mem_total - firmware_dir_size) * MAX_PERC_MEM) / 100 ))
+  fi
+
+  case ${mem_val} in
+    # Using "echo" because we are echoing these values into variable. Not for the see the value.
+    ''|*[!0-9]*) # In this case something very bad happened. Return max value.
+      max_mem=$(( ((mem_total - firmware_dir_size) * MAX_PERC_MEM) / 100 ))
+      logger -t "memory:/webrtc" "Could not determine memory value, using max: $max_mem"
+      echo ${max_mem}
+      ;;
+    *)
+      logger -t "memory:/webrtc" "Memory determination successful: $mem_val"
+      echo ${mem_val}
+      ;;
+  esac
+}
+
+stop_service() {
+  if [ $(${initscript} status) = "inactive" ]; then
+    for process in $(pgrep "${FIRMWARE}"); do
+      cmdline="/proc/${process}/cmdline"
+      [ ! -f "${cmdline}" ] && exit 0
+      if grep -q "${FIRMWARE}" "${cmdline}"; then
+        kill -s SIGTERM ${process}
+      fi
+    done
+    exit 0
+  fi
+}

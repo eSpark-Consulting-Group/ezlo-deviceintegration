@@ -1,0 +1,126 @@
+#include <string>
+
+namespace HubPlatform {
+namespace Metrics {
+namespace UT {
+// These are dummy certificates and SHOULD NOT be used anywhere except unit tests!
+std::string clientCrt = R"(-----BEGIN CERTIFICATE-----
+MIID7zCCAtegAwIBAgIUCxuBU4AVGKSiBFBMMfazRCRlN+owDQYJKoZIhvcNAQEL
+BQAwgYYxCzAJBgNVBAYTAlhYMRIwEAYDVQQIDAlTdGF0ZU5hbWUxETAPBgNVBAcM
+CENpdHlOYW1lMRQwEgYDVQQKDAtDb21wYW55TmFtZTEbMBkGA1UECwwSQ29tcGFu
+eVNlY3Rpb25OYW1lMR0wGwYDVQQDDBRDb21tb25OYW1lT3JIb3N0bmFtZTAeFw0y
+MzA3MDUxMjQ0NDhaFw0zMzA3MDIxMjQ0NDhaMIGGMQswCQYDVQQGEwJYWDESMBAG
+A1UECAwJU3RhdGVOYW1lMREwDwYDVQQHDAhDaXR5TmFtZTEUMBIGA1UECgwLQ29t
+cGFueU5hbWUxGzAZBgNVBAsMEkNvbXBhbnlTZWN0aW9uTmFtZTEdMBsGA1UEAwwU
+Q29tbW9uTmFtZU9ySG9zdG5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQCgFoArLXSdP8z2lsoZYCuUznxLnraE2OutnJrI6KUi3mkfrUHwHNAjD0EB
+z2/2xG0IJLIs5cncke5GrwWY5y+ddrhkpFyVyTG0vgHQVPhZWqWZsiG9prlHOMKi
+QGakfQ+H5cRIw7yPSIGqK6Rm1wFrUrbfouaqM/CknhNo9rj8X4586Twn95dTV3/r
+xtGplfeimK/9CeromyS5pEFo9yjmqSgPG7TF0tzbBW74IhqVy8KpYGZKXDNdVFZ3
+Yua59+nvOVHqOCMgyPv4B+n8UBbd6VfJEyADTFvo34qKHWGH3BXk8fN1nR8rY4SF
+copdYe/EFrMPcObHESC3Wy+myLJlAgMBAAGjUzBRMB0GA1UdDgQWBBSwSpK9/qbi
+PYPvnjgc50eoHHcBVjAfBgNVHSMEGDAWgBSwSpK9/qbiPYPvnjgc50eoHHcBVjAP
+BgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBYqSh4neD2GP32Jx1Y
+xSLnzTNsyahssAPhJN5yk8PqSoa6eYxxosDp9ygCKLvwKCPNMRONvWn36EHfzsGz
+m+5PBU4nD9Ab1aG8r7PgqeRoRzhh2/esPxPTTQoI/9zF/jWOhJj1XTsDsWJ3jDDn
+x9ROMGqHC0cBhTgJh+lyQRxtciqyytQlSoMdtLJLZYk/KMCNBzh6kVmOVfxAF7B0
+OLGBBL0Spd3Qi8rhrk2DBtPaMN6TiLZcqDsrn5QeW64BiMBDt/hhMBbI5N8+VpXi
+PcOaqvfCcZ93y5AXqgjbF216QykpWgBkVBXSUQ3yK987tE0aEkN1aQ68rfO+tWbW
+fhWh
+-----END CERTIFICATE-----)";
+
+std::string clientPrivateKey = R"(-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCgFoArLXSdP8z2
+lsoZYCuUznxLnraE2OutnJrI6KUi3mkfrUHwHNAjD0EBz2/2xG0IJLIs5cncke5G
+rwWY5y+ddrhkpFyVyTG0vgHQVPhZWqWZsiG9prlHOMKiQGakfQ+H5cRIw7yPSIGq
+K6Rm1wFrUrbfouaqM/CknhNo9rj8X4586Twn95dTV3/rxtGplfeimK/9CeromyS5
+pEFo9yjmqSgPG7TF0tzbBW74IhqVy8KpYGZKXDNdVFZ3Yua59+nvOVHqOCMgyPv4
+B+n8UBbd6VfJEyADTFvo34qKHWGH3BXk8fN1nR8rY4SFcopdYe/EFrMPcObHESC3
+Wy+myLJlAgMBAAECggEADIZmJbqrNohg2WQn0L9w+XYETIhQ4Gj2W4F2rMRi8yzy
+jZtpHseqUyvk2qbnrCdnHm18kT2zQvIZ8ebMqc9grtG0kI85fTCeFnWNP8b+HUOV
+1EYXFLcAJP3gYIBoZ3MvbWMBLe4+iPlTx8QdWzx0LHjuvOWKZYOlzsNdYmd3Rqt1
+iRhxu+uSmbVev35epaheBSzqP+WjXJ6X/AaUM2VJaNqb4MUwlywLJHTjdhfXXJy+
+oR5rp0Eo6OGq5JAXp2k0QGs8xND+AAbEYybyV6qFNPHPTLeSfzXbjXvWFlc9kngV
+zUJwME5z1A3YWisSmd0TeHdjw57mBYey1YTMY5HZ4QKBgQDV7rVV1Wcpy9s+ctF+
+1/wwzROR0cTUOqlOmIBhR3/KRcGrmML8ZXybQJtLkYOrLFJIDrd7LksIGzGTgLPr
+blH4O0EIjeP2NS9868KjesnDBssykamWjkZ9St1wNHLteIaW8ZW47nhVeXptrn+a
+WjOPtVbsNKJGLmRQk9KudF5yVQKBgQC/kUY01trkinUeTko3lRBLUBf7QSsdG2+/
+Lp4Coad1fO5W7F7LFLDoYkUyThCR/RpbLpc0qwq+w+RQeET531bG6NfMvZLEmOHl
+AKvAJaqH5AxIybq1FD848V3daj6KcQ7V+xymO59NOhoybG8K04rF7mdLfCM/Cvi7
+zsaX5TDv0QKBgQCwT7drMiF/tN7QLNizbVYO8jT6rKNHNcFrYQwNIFwVXEAtKA0q
+7okveqOCOD8Hx9NYR6i4AIMd/ytwoVWm5pjvuAX1AtupglPM5JDZIs09yk+VMa9O
+wZsej6DIZLGDPR3PMPNwIjlSWHeqBXJsx4JPIeitawOCS6GpNusflBBysQKBgHXk
+ZZxnDVbQjrsT20DRj7GJnPiXZn0HQYIaoktkSLZZKCR+WugH18drksIeoLv3U50B
+0zQqfvZff8a1/Vz5QWIwMX5ivEwY+gwAmbIqfAQdKCIzY5/E0hOtFuMIW2y/ny24
+2CzFTIguVajqanvzK9gbm54sy1Qk4GZUHoukFLXBAoGBAM1KRQnGmxEhlXZMF+vz
+962RDhmZrQTHUESSIvb1rGgnlwymJ8LbV95CBrNtAe9aePQtrMyCFOfuwng9JPFN
+rvbA8O45JM/ZQ3NLUnUsRq28AKDrMHdx9fElKvyGuGWfFe1iFWtq0XWcK2MKsM/J
+aE9m2FYoJYmcHbVFKfbP0vkf
+-----END PRIVATE KEY-----)";
+
+std::string serverPublicKey = R"(-----BEGIN CERTIFICATE-----
+MIID7zCCAtegAwIBAgIUCxuBU4AVGKSiBFBMMfazRCRlN+owDQYJKoZIhvcNAQEL
+BQAwgYYxCzAJBgNVBAYTAlhYMRIwEAYDVQQIDAlTdGF0ZU5hbWUxETAPBgNVBAcM
+CENpdHlOYW1lMRQwEgYDVQQKDAtDb21wYW55TmFtZTEbMBkGA1UECwwSQ29tcGFu
+eVNlY3Rpb25OYW1lMR0wGwYDVQQDDBRDb21tb25OYW1lT3JIb3N0bmFtZTAeFw0y
+MzA3MDUxMjQ0NDhaFw0zMzA3MDIxMjQ0NDhaMIGGMQswCQYDVQQGEwJYWDESMBAG
+A1UECAwJU3RhdGVOYW1lMREwDwYDVQQHDAhDaXR5TmFtZTEUMBIGA1UECgwLQ29t
+cGFueU5hbWUxGzAZBgNVBAsMEkNvbXBhbnlTZWN0aW9uTmFtZTEdMBsGA1UEAwwU
+Q29tbW9uTmFtZU9ySG9zdG5hbWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQCgFoArLXSdP8z2lsoZYCuUznxLnraE2OutnJrI6KUi3mkfrUHwHNAjD0EB
+z2/2xG0IJLIs5cncke5GrwWY5y+ddrhkpFyVyTG0vgHQVPhZWqWZsiG9prlHOMKi
+QGakfQ+H5cRIw7yPSIGqK6Rm1wFrUrbfouaqM/CknhNo9rj8X4586Twn95dTV3/r
+xtGplfeimK/9CeromyS5pEFo9yjmqSgPG7TF0tzbBW74IhqVy8KpYGZKXDNdVFZ3
+Yua59+nvOVHqOCMgyPv4B+n8UBbd6VfJEyADTFvo34qKHWGH3BXk8fN1nR8rY4SF
+copdYe/EFrMPcObHESC3Wy+myLJlAgMBAAGjUzBRMB0GA1UdDgQWBBSwSpK9/qbi
+PYPvnjgc50eoHHcBVjAfBgNVHSMEGDAWgBSwSpK9/qbiPYPvnjgc50eoHHcBVjAP
+BgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBYqSh4neD2GP32Jx1Y
+xSLnzTNsyahssAPhJN5yk8PqSoa6eYxxosDp9ygCKLvwKCPNMRONvWn36EHfzsGz
+m+5PBU4nD9Ab1aG8r7PgqeRoRzhh2/esPxPTTQoI/9zF/jWOhJj1XTsDsWJ3jDDn
+x9ROMGqHC0cBhTgJh+lyQRxtciqyytQlSoMdtLJLZYk/KMCNBzh6kVmOVfxAF7B0
+OLGBBL0Spd3Qi8rhrk2DBtPaMN6TiLZcqDsrn5QeW64BiMBDt/hhMBbI5N8+VpXi
+PcOaqvfCcZ93y5AXqgjbF216QykpWgBkVBXSUQ3yK987tE0aEkN1aQ68rfO+tWbW
+fhWh
+-----END CERTIFICATE-----)";
+
+char const* jsonData = R"(
+    {
+	  "System": {
+        "FileSystem": {
+          "\/": {
+            "available_space": 248,
+              "total_space": 466,
+              "used_space": 218
+          },
+            "\/home": {
+              "available_space": 12944,
+              "total_space": 13700,
+              "used_space": 756
+            }
+        },
+        "LoadAverage": {
+          "load_1": 0.136719,
+          "load_15": 0.024902,
+          "load_5": 0.081543
+        },
+        "Memory": {
+          "available": 406480,
+          "cached": 76116,
+          "free": 368428,
+          "total": 510056
+        },
+        "Time": {
+          "localtime": 1683135330,
+          "timezone": 0,
+          "uptime": 10,
+          "utctime": 1683135330
+        },
+        "oom_kill": 0,
+        "reboot_count": 35
+      }
+    }
+    )";
+
+}  // namespace UT
+}  // namespace Metrics
+}  // namespace HubPlatform

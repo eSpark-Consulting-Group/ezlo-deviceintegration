@@ -1,0 +1,2 @@
+17 */1	* * *	/etc/cronparts/logrotate
+01 *	* * *   /etc/cronparts/shrink_folder /home/cores/ 10

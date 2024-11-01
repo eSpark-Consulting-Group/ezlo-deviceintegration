@@ -1,0 +1,29 @@
+{
+  "id": "cloud_storage",
+  "version": "1.0",
+  "type": "gateway",
+  "dependencies": {
+    "addons": [
+      {
+        "id": "lua",
+        "version": "1.0"
+      }
+    ]
+  },
+
+  "permissions": [
+    "cloud_storage",
+    "core"
+  ],
+
+  "startup": "scripts/startup",
+  "teardown": "scripts/teardown",
+
+  "gateway": {
+    "name": "cloud_storage",
+    "label": "Cloud Storage",
+    "reason": "No Reason",
+    "setItemValueCommand": "HUB:cloud_storage/scripts/set_item_value"
+  }
+}
+

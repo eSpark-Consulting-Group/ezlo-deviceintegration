@@ -1,0 +1,7 @@
+{
+    "call": "storage-redirect-upload-finished",
+    "params": {
+        "size": 50000,
+        "upload_uuid": "a3731370-6b10-11ed-abb5-55b43ed72149"
+    }
+}

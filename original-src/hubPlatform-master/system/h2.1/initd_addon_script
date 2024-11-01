@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=01
+
+start() {
+        firmware_dir=/opt/firmware
+        daemon=$(basename "${initscript}")
+        $firmware_dir/bin/start.sh -d $daemon
+}
+
+stop() {
+        firmware_dir=/opt/firmware
+        daemon=$(basename "${initscript}")
+        $firmware_dir/bin/stop.sh -d $daemon
+}

@@ -1,0 +1,166 @@
+stages:
+    - clang-format
+    - base-build
+    - base-combine
+    - build
+    - combine
+
+.base-build: &base-build
+  image: quay.io/podman/stable
+  stage: base-build
+  script:
+    - podman login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry.nurd.com
+    - podman build --no-cache --tag "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA-$ARCH" --build-arg ARCH=$ARCH --build-arg TARGET_PLATFORM=$PLATFORM --platform=$PLATFORM --file misc/dockers/vhub/Dockerfile_base .
+    - podman image inspect "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA-$ARCH"
+    - podman push "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA-$ARCH"
+
+clang-format:
+  image: ubuntu:18.04
+  stage: clang-format
+  tags:
+    - dind
+    - amd64
+  script:
+    - apt-get update
+    - apt-get -y install clang-format-6.0 python3
+    - ln -s /usr/bin/clang-format{-6.0,}
+    - ln -s /usr/bin/clang-format-diff{-6.0,}
+    - python3 misc/scripts/code_style.py -j4 --all --action=check
+
+base-arm64:
+  tags:
+    - dind
+    - arm64
+  variables:
+    ARCH: arm64
+    PLATFORM: linux/arm64/v8
+  <<: *base-build
+
+base-arm:
+  tags:
+    - dind
+    - arm64
+  variables:
+    ARCH: arm
+    PLATFORM: linux/arm/v7
+  <<: *base-build
+
+base-amd64:
+  tags:
+    - dind
+    - amd64
+  variables:
+    ARCH: amd64
+    PLATFORM: linux/amd64
+  <<: *base-build
+
+base-combine:
+  image: gitlab-registry.nurd.com/ci-tools/docker-ci-builders/podman/podman:amd64-stable
+  stage: base-combine
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - dind
+    - amd64
+  script:
+    - podman login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry.nurd.com
+    - podman manifest create "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA"
+    - podman manifest add --variant=v7 "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/base:${CI_COMMIT_SHORT_SHA}-arm"
+    - podman manifest add --arch=arm64 --variant=v8 "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/base:${CI_COMMIT_SHORT_SHA}-arm64"
+    - podman manifest add "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/base:${CI_COMMIT_SHORT_SHA}-amd64"
+    - podman manifest inspect "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA"
+    - podman manifest push --all "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA" "$CI_REGISTRY_IMAGE/base:$CI_COMMIT_SHORT_SHA"
+
+.build: &build
+  image: gitlab-registry.nurd.com/ci-tools/docker-ci-builders/podman/podman:amd64-stable
+  stage: build
+  tags:
+    - dind
+    - amd64
+  script:
+    - >
+      if [ "${CI_COMMIT_TAG:0:8}" == "release/" ];then
+        IMAGE_TAG=${CI_COMMIT_TAG/release\//}
+      else
+        IMAGE_TAG=$CI_COMMIT_SHORT_SHA
+      fi
+    - git submodule set-url deps/ZNet ../ZNet
+    - git submodule set-url deps/Zigbee ../Zigbee
+    - git submodule set-url deps/gtest https://github.com/google/googletest.git
+    - git submodule set-url deps/openwrt_platform ../openwrt_platform
+    - git submodule set-url deps/HubPlugins ../HubPlugins
+    - git submodule status
+    - git submodule update --init
+    - cd deps/ZNet;git submodule set-url esp32/tests/gtest https://github.com/google/googletest.git;cd ../..
+    - cd deps/HubPlugins;git submodule set-url utils/deps ../HubPluginsUtils;cd ../..
+    - cd deps/HubPlugins;git submodule set-url plugins/foscam ../plugins/foscam-ezlo;cd ../..
+    - git submodule foreach git submodule update --init
+    - podman login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry.nurd.com
+    - podman build --no-cache --tag "$CI_REGISTRY_IMAGE:$IMAGE_TAG-$ARCH" --build-arg ARCH=$ARCH --build-arg TARGET_PLATFORM=$PLATFORM --build-arg FIRMWARE_BUILD_NUMBER=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_SHORT_SHA=$CI_COMMIT_SHORT_SHA --platform=$PLATFORM --file misc/dockers/vhub/Dockerfile .
+    - podman image inspect "$CI_REGISTRY_IMAGE:$IMAGE_TAG-$ARCH"
+    - podman push "$CI_REGISTRY_IMAGE:$IMAGE_TAG-$ARCH"
+
+arm:
+  variables:
+    ARCH: arm
+    PLATFORM: linux/arm/v7
+  <<: *build
+
+arm64:
+  variables:
+    ARCH: arm64
+    PLATFORM: linux/arm/v8
+  <<: *build
+
+amd64:
+  variables:
+    ARCH: amd64
+    PLATFORM: linux/amd64
+  <<: *build
+
+combine-to-gcr:
+  image: gitlab-registry.nurd.com/ci-tools/docker-ci-builders/podman/podman:amd64-stable
+  stage: combine
+  tags:
+    - dind
+    - amd64
+  only:
+    - tags
+  script:
+    - >
+      if [ "${CI_COMMIT_TAG:0:8}" == "release/" ];then
+        IMAGE_TAG=${CI_COMMIT_TAG/release\//}
+      else
+        IMAGE_TAG=$CI_COMMIT_SHORT_SHA
+      fi
+    - cat $GOOGLE_APPLICATION_CREDENTIALS|podman login -u _json_key --password-stdin us-east4-docker.pkg.dev
+    - podman login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry.nurd.com
+    - podman manifest create "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG"
+    - podman manifest add --variant=v7 "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:$IMAGE_TAG-arm"
+    - podman manifest add --arch=arm64 --variant=v8 "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:$IMAGE_TAG-arm64"
+    - podman manifest add "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:$IMAGE_TAG-amd64"
+    - podman manifest inspect "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG"
+    - podman manifest push --all "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG" "us-east4-docker.pkg.dev/softhub-354014/softhub/vhub:$IMAGE_TAG"
+
+combine:
+  image: gitlab-registry.nurd.com/ci-tools/docker-ci-builders/podman/podman:amd64-stable
+  stage: combine
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - dind
+    - amd64
+  script:
+    - >
+      if [ "${CI_COMMIT_TAG:0:8}" == "release/" ];then
+        IMAGE_TAG=${CI_COMMIT_TAG/release\//}
+      else
+        IMAGE_TAG=$CI_COMMIT_SHORT_SHA
+      fi
+    - podman login -u gitlab-ci-token -p $CI_JOB_TOKEN gitlab-registry.nurd.com
+    - podman manifest create "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+    - podman manifest add --variant=v7 "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:${IMAGE_TAG}-arm"
+    - podman manifest add --arch=arm64 --variant=v8 "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:${IMAGE_TAG}-arm64"
+    - podman manifest add "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:${IMAGE_TAG}-amd64"
+    - podman manifest inspect "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+    - podman manifest push --all "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:$IMAGE_TAG"

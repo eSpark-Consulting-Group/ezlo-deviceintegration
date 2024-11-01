@@ -1,0 +1,14 @@
+diff -ruN a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2020-07-26 18:13:45.000000000 +0300
++++ b/CMakeLists.txt	2021-07-08 12:40:43.409936288 +0300
+@@ -416,9 +416,7 @@
+     ${JSON_C_SOURCES}
+     ${JSON_C_HEADERS}
+ )
+-set_target_properties(${PROJECT_NAME} PROPERTIES
+-    VERSION 5.1.0
+-    SOVERSION 5)
++
+ list(APPEND CMAKE_TARGETS ${PROJECT_NAME})
+ # If json-c is used as subroject it set to target correct interface -I flags and allow
+ # to build external target without extra include_directories(...)

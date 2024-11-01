@@ -1,0 +1,8 @@
+#!/bin/bash
+# wrapper for iproute2 configure
+# assume current working dir is the iproute2 source folder
+# $1=/path/to/ar
+# $2=/path/to/cc
+export AR="${1:-ar}"
+export CC="${2:-gcc}"
+./configure AR="${AR}" CC="${CC}"

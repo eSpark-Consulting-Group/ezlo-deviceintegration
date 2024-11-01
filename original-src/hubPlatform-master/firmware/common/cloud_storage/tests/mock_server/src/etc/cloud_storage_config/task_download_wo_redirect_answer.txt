@@ -1,0 +1,4 @@
+Download without redirect
+
+This is an answer for download without redirect,
+payload data of a "downloaded" file.

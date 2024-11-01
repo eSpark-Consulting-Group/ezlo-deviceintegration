@@ -1,0 +1,4 @@
+17 */1	* * *	/etc/cronparts/logrotate
+*  *	* * *	/etc/cronparts/logslice
+01 *	* * *   /etc/cronparts/shrink_folder /home/cores/ 20
+01 */8	* * *	/etc/init.d/sysntpd restart

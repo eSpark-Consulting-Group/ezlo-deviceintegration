@@ -1,0 +1,6 @@
+#!/bin/sh
+
+service avahi-daemon start
+service cron start
+service ssh start
+/opt/firmware/bin/vhub_manager

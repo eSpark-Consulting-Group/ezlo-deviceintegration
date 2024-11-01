@@ -1,0 +1,7 @@
+#include "luup/luup_addon.h"
+#include "addon_interfaces/daemon_addon.h"
+
+int main( int argc, char* argv[] ) {
+    using namespace HubPlatform;
+    return Addons::DaemonAddon< Addons::LuupAddon >( "@HUB_WWW_PATH@" ).run( argc, argv );
+}
